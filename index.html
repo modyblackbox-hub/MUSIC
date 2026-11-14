@@ -5,32 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="artifact-type" content="dashboard">
   <meta name="design-style" content="neon_noir">
-  <title>Weekly Dubstep Release Tracker — NMF #316 &amp; Bass Intelligence</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>JANICE (v.001) — Top 100 Dubstep Leaderboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100;200;300;400;500;600;700;800&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
-  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tone@14.9.17/build/Tone.js"></script>
-
   <style>
     :root {
       color-scheme: dark;
 
-      /* Neon Noir palette */
+      /* Page and surfaces */
       --background: #0a0a12;
       --surface-container-low: #111118;
       --surface-container: #141422;
       --surface-container-high: #1e1e30;
 
+      /* Text */
       --on-surface: #e8e0f0;
       --on-surface-variant: #a098b0;
 
+      /* Lines */
       --outline: #5a5068;
       --outline-variant: #302840;
 
+      /* Neon accents */
       --primary: #ff2d78;
       --on-primary: #1a0010;
       --primary-container: #b3004e;
@@ -40,31 +35,34 @@
       --error: #ff4444;
       --on-error: #1a0000;
 
+      /* Data series */
       --data-1: #ff2d78;
       --data-2: #00ffcc;
       --data-3: #ffe04a;
       --data-4: #b388ff;
       --data-context: #6e6680;
 
+      /* Fonts */
       --font-headline: 'Sora', sans-serif;
       --font-body: 'Inter', sans-serif;
       --font-label: 'Space Mono', monospace;
 
+      /* Shape */
       --rounded: 0.125rem;
       --rounded-lg: 0.25rem;
       --rounded-full: 0.75rem;
 
+      /* Effects */
       --glow-text: 0 0 8px currentColor;
       --glow-primary: 0 0 16px color-mix(in srgb, var(--primary) 40%, transparent);
       --glow-secondary: 0 0 16px color-mix(in srgb, var(--secondary) 35%, transparent);
       --neon-border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
       --neon-border-lit: 1px solid color-mix(in srgb, var(--primary) 50%, transparent);
-      --cyan-border: 1px solid color-mix(in srgb, var(--secondary) 30%, transparent);
-      --cyan-border-lit: 1px solid color-mix(in srgb, var(--secondary) 55%, transparent);
-      --yellow-border: 1px solid color-mix(in srgb, var(--tertiary) 45%, transparent);
-      --purple-border: 1px solid color-mix(in srgb, var(--data-4) 45%, transparent);
+      --neon-border-cyan: 1px solid color-mix(in srgb, var(--secondary) 30%, transparent);
+      --neon-border-cyan-lit: 1px solid color-mix(in srgb, var(--secondary) 55%, transparent);
+      --neon-border-yellow: 1px solid color-mix(in srgb, var(--tertiary) 45%, transparent);
       --neon-inset: inset 0 0 12px color-mix(in srgb, var(--primary) 10%, transparent);
-      --cyan-inset: inset 0 0 12px color-mix(in srgb, var(--secondary) 10%, transparent);
+      --neon-inset-cyan: inset 0 0 12px color-mix(in srgb, var(--secondary) 10%, transparent);
       --glow-line: drop-shadow(0 0 4px currentColor);
       --scanlines: repeating-linear-gradient(
         to bottom,
@@ -73,12 +71,12 @@
       );
 
       /* Shared tokens */
-      --positive: #00ffcc;
-      --warning: #ffe04a;
-      --focus: #ff2d78;
+      --positive: var(--secondary);
+      --warning: var(--tertiary);
+      --focus: var(--primary);
 
-      /* Dashboard type scale */
-      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.35rem);
+      /* Type scale (Dashboard) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
       --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
       --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
       --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
@@ -97,117 +95,107 @@
       --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
       --dur-micro: 120ms;
       --dur-short: 220ms;
-      --dur-long: 420ms;
     }
 
-    /* Base reset */
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
       overflow-x: clip;
       margin: 0;
       padding: 0;
       background-color: var(--background);
+      background-image: var(--scanlines);
       color: var(--on-surface);
       font-family: var(--font-body);
       font-size: var(--body-size);
-      line-height: 1.6;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
     }
     header { position: static !important; }
-
-    .page {
-      background-color: var(--background);
-      background-image: var(--scanlines);
-      min-height: 100vh;
-    }
 
     .page-grid {
       display: grid;
       gap: var(--space-lg);
       padding: var(--space-lg);
-      max-width: 1320px;
+      max-width: 1240px;
       margin: 0 auto;
       overflow: hidden;
     }
     .page-grid * { min-width: 0; }
 
-    /* Focus rings */
     :focus-visible {
       outline: 2px solid var(--focus);
       outline-offset: 2px;
-      box-shadow: var(--glow-primary);
     }
 
-    /* Typography helpers */
-    h1, h2, h3, h4 {
-      font-family: var(--font-headline);
-      margin: 0;
-      color: var(--on-surface);
+    /* Header HUD */
+    .hud-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
     }
-    h1 {
-      font-size: var(--display-size);
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      line-height: 1.08;
+    .brand-cluster {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
     }
-    h2 {
-      font-size: var(--headline-size);
-      font-weight: 700;
-      letter-spacing: -0.015em;
-      line-height: 1.2;
-    }
-    h3 {
-      font-size: var(--subhead-size);
-      font-weight: 600;
-      line-height: 1.3;
-    }
-    p { margin: 0; }
-
-    .kicker {
-      font-family: var(--font-label);
-      font-size: var(--label-size);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--secondary);
-      text-shadow: var(--glow-text);
-      display: inline-flex;
-      align-items: center;
+    .brand-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
       gap: var(--space-sm);
     }
-
-    .mono-label {
+    .brand-name {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: clamp(2rem, 1.6rem + 1.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--on-surface);
+    }
+    .brand-version {
       font-family: var(--font-label);
-      font-size: var(--label-size);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--on-surface-variant);
-    }
-
-    .neon-text {
-      color: var(--primary);
-      text-shadow: var(--glow-text);
-    }
-    .cyan-text {
+      font-size: var(--subhead-size);
+      font-weight: 700;
       color: var(--secondary);
       text-shadow: var(--glow-text);
+      letter-spacing: 0.04em;
     }
-
-    /* Neon Noir panels */
-    .neon-panel {
-      background: var(--surface-container);
-      border: var(--neon-border);
-      box-shadow: var(--neon-inset);
-      border-radius: var(--rounded-lg);
-      padding: var(--space-lg);
+    .clock-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
     }
-    .neon-panel.is-cyan {
-      border: var(--cyan-border);
-      box-shadow: var(--cyan-inset);
+    .clock-time {
+      color: var(--primary);
+      text-shadow: var(--glow-text);
+      font-weight: 700;
     }
-    .neon-panel.is-neutral {
-      border: 1px solid var(--outline-variant);
-      box-shadow: none;
+    .clock-sep {
+      color: var(--outline);
+    }
+    .header-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-xs);
+    }
+    .sync-status {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
     /* Buttons */
@@ -215,10 +203,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: var(--space-xs);
+      gap: var(--space-sm);
       min-height: 44px;
-      padding: var(--space-sm) var(--space-md);
-      background: var(--surface-container-low);
+      padding: var(--space-sm) var(--space-lg);
+      background: var(--surface-container);
       color: var(--primary);
       border: var(--neon-border-lit);
       border-radius: var(--rounded);
@@ -230,8 +218,7 @@
       cursor: pointer;
       transition: box-shadow var(--dur-short) var(--ease-out),
                   border-color var(--dur-short) var(--ease-out),
-                  background-color var(--dur-short) var(--ease-out),
-                  color var(--dur-short) var(--ease-out);
+                  background-color var(--dur-short) var(--ease-out);
     }
     .btn-neon:hover {
       border-color: var(--primary);
@@ -243,60 +230,62 @@
       background: var(--primary-container);
       color: var(--on-primary-container);
     }
-    .btn-neon:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
     .btn-neon.is-cyan {
       color: var(--secondary);
-      border: var(--cyan-border-lit);
+      border: var(--neon-border-cyan-lit);
     }
     .btn-neon.is-cyan:hover {
       border-color: var(--secondary);
       box-shadow: var(--glow-secondary);
       text-shadow: var(--glow-text);
     }
-    .btn-neon.is-cyan.is-active {
-      background: color-mix(in srgb, var(--secondary) 14%, var(--surface-container-high));
+    .btn-compact {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 36px;
+      min-width: 36px;
+      padding: var(--space-xs) var(--space-sm);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: border-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out);
+    }
+    .btn-compact:hover {
       border-color: var(--secondary);
+      color: var(--secondary);
       box-shadow: var(--glow-secondary);
     }
-
-    .btn-neon.is-active {
-      background: color-mix(in srgb, var(--primary) 16%, var(--surface-container-high));
+    .btn-compact.is-playing {
       border-color: var(--primary);
+      color: var(--primary);
+      background: var(--surface-container-high);
       box-shadow: var(--glow-primary);
     }
 
-    .btn-compact {
-      min-height: 36px;
-      padding: var(--space-xs) var(--space-sm);
+    /* Neon Panels */
+    .neon-panel {
+      background: var(--surface-container);
+      border: var(--neon-border);
+      box-shadow: var(--neon-inset);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+    }
+    .neon-panel.is-cyan {
+      border: var(--neon-border-cyan);
+      box-shadow: var(--neon-inset-cyan);
     }
 
-    /* Header & KPI Row */
-    .hero-header {
-      display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-      gap: var(--space-lg);
-      align-items: end;
-      border-bottom: 1px solid var(--outline-variant);
-      padding-bottom: var(--space-lg);
-    }
-    .hero-lede {
-      color: var(--on-surface-variant);
-      max-width: 65ch;
-      margin-top: var(--space-sm);
-    }
-    .hero-meta-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-sm);
-      justify-content: flex-end;
-      align-items: center;
-    }
-
+    /* KPI Strip */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -308,318 +297,161 @@
       flex-direction: column;
       gap: var(--space-xs);
     }
+    .kpi-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-surface-variant);
+    }
     .kpi-value {
       font-family: var(--font-headline);
-      font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.85rem);
+      font-size: var(--headline-size);
       font-weight: 700;
+      letter-spacing: -0.02em;
       line-height: 1.15;
+      color: var(--primary);
+      text-shadow: var(--glow-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .kpi-card.is-cyan .kpi-value {
+      color: var(--secondary);
     }
     .kpi-caption {
       font-size: 0.8125rem;
       color: var(--on-surface-variant);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    /* Section Header */
-    .section-head {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: var(--space-md);
-      margin-bottom: var(--space-md);
-    }
-    .section-sub {
-      color: var(--on-surface-variant);
-      font-size: 0.875rem;
-      margin-top: var(--space-xs);
-    }
-
-    /* Deck + Subgenre Chart Asymmetric Grid */
-    .deck-analytics-grid {
+    /* Asymmetric Mid Deck: Telemetry + Audio Synth Engine */
+    .deck-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
       gap: var(--space-lg);
       align-items: stretch;
     }
-
-    .deck-header {
+    .panel-head {
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
       gap: var(--space-sm);
-      padding-bottom: var(--space-md);
-      border-bottom: 1px solid var(--outline-variant);
       margin-bottom: var(--space-md);
     }
-
-    .mode-switch {
-      display: inline-flex;
-      gap: var(--space-xs);
-    }
-
-    .deck-stage {
-      display: grid;
-      grid-template-columns: 168px minmax(0, 1fr);
-      gap: var(--space-lg);
-      align-items: center;
-      margin-bottom: var(--space-md);
-    }
-
-    .deck-art-frame {
-      width: 168px;
-      height: 168px;
-      background: var(--surface-container-low);
-      border: var(--neon-border-lit);
-      border-radius: var(--rounded);
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .deck-art-frame svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .deck-info {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-sm);
-    }
-    .deck-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-xs);
-      align-items: center;
-    }
-
-    .tag-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      border-radius: var(--rounded);
-      font-family: var(--font-label);
-      font-size: 0.7rem;
+    .panel-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      background: transparent;
-      border: 1px solid var(--outline);
+      letter-spacing: -0.01em;
       color: var(--on-surface);
     }
-    .tag-chip.is-pink {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-    .tag-chip.is-cyan {
-      border-color: var(--secondary);
-      color: var(--secondary);
-    }
-    .tag-chip.is-yellow {
-      border-color: var(--tertiary);
-      color: var(--tertiary);
-    }
-    .tag-chip.is-purple {
-      border-color: var(--data-4);
-      color: var(--data-4);
-    }
-
-    .canvas-viz-wrap {
-      background: var(--surface-container-low);
-      border: 1px solid var(--outline-variant);
-      border-radius: var(--rounded);
-      padding: var(--space-sm);
-      margin-bottom: var(--space-md);
-    }
-    #deck-canvas {
-      width: 100%;
-      height: 112px;
-      display: block;
-    }
-
-    .deck-controls {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: var(--space-md);
-      align-items: center;
-    }
-
-    .transport-row {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-
-    .scrubber-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .scrubber-meta {
-      display: flex;
-      justify-content: space-between;
+    .kicker {
       font-family: var(--font-label);
-      font-size: 0.7rem;
-      color: var(--on-surface-variant);
-    }
-
-    input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 6px;
-      background: var(--surface-container-high);
-      border-radius: var(--rounded);
-      outline: none;
-      cursor: pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: var(--rounded);
-      background: var(--primary);
-      border: 1px solid var(--on-surface);
-      box-shadow: var(--glow-primary);
-      cursor: pointer;
-    }
-
-    .deck-footer-bar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: var(--space-sm);
-      margin-top: var(--space-md);
-      padding-top: var(--space-sm);
-      border-top: 1px solid var(--outline-variant);
-    }
-    .uri-readout {
-      font-family: var(--font-label);
-      font-size: 0.75rem;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       color: var(--secondary);
-      word-break: break-all;
-    }
-
-    /* Right Chart + Crate Panel */
-    .analytics-panel {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: var(--space-md);
+      text-shadow: var(--glow-text);
     }
     .chart-box {
-      position: relative;
-      min-height: 220px;
-      height: 230px;
+      min-height: 170px;
       width: 100%;
     }
-    .crate-mini {
-      border-top: 1px solid var(--outline-variant);
-      padding-top: var(--space-md);
+    .audio-deck {
       display: flex;
       flex-direction: column;
-      gap: var(--space-sm);
-    }
-    .crate-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-      max-height: 145px;
-      overflow-y: auto;
-    }
-    .crate-item {
-      display: flex;
       justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .deck-track-title {
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
+      font-weight: 700;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .deck-track-meta {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .deck-controls {
+      display: flex;
       align-items: center;
       gap: var(--space-sm);
-      padding: var(--space-xs) var(--space-sm);
-      background: var(--surface-container-low);
-      border-left: 2px solid var(--secondary);
-      border-radius: var(--rounded);
-      font-size: 0.8125rem;
+      flex-wrap: wrap;
     }
-    .crate-item-title {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .eq-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-xs);
+      height: 36px;
+      padding: var(--space-xs) 0;
+    }
+    .eq-bar {
+      flex: 1;
+      background: var(--outline-variant);
+      border-top: 2px solid var(--secondary);
+      min-height: 4px;
+      transition: height var(--dur-micro) var(--ease-out);
     }
 
-    /* Featured Artwork Cards */
-    .artwork-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    /* Generator Tabs & Filter Bar */
+    .controls-section {
+      display: flex;
+      flex-direction: column;
       gap: var(--space-md);
     }
-    .art-card {
-      background: var(--surface-container);
-      border: 1px solid var(--outline-variant);
-      border-radius: var(--rounded-lg);
-      overflow: hidden;
+    .tab-strip {
       display: flex;
-      flex-direction: column;
-      transition: border-color var(--dur-short) var(--ease-out),
-                  transform var(--dur-short) var(--ease-out);
-    }
-    .art-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-    .art-card-visual {
-      height: 156px;
-      background: var(--surface-container-low);
+      flex-wrap: wrap;
+      gap: var(--space-sm);
       border-bottom: 1px solid var(--outline-variant);
-      position: relative;
-      overflow: hidden;
+      padding-bottom: var(--space-sm);
     }
-    .art-card-visual svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .art-card-rank {
-      position: absolute;
-      top: var(--space-sm);
-      left: var(--space-sm);
-      background: var(--background);
-      border: var(--yellow-border);
-      color: var(--tertiary);
-      font-family: var(--font-label);
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: var(--rounded);
-    }
-    .art-card-body {
-      padding: var(--space-md);
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-sm);
-      flex: 1;
-    }
-    .art-card-meta {
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
       color: var(--on-surface-variant);
-      font-size: 0.8125rem;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: color var(--dur-short) var(--ease-out),
+                  border-color var(--dur-short) var(--ease-out),
+                  box-shadow var(--dur-short) var(--ease-out);
     }
-    .art-card-actions {
-      margin-top: auto;
-      display: flex;
-      gap: var(--space-sm);
-      padding-top: var(--space-xs);
+    .tab-btn:hover {
+      color: var(--on-surface);
+      border-color: var(--outline);
+    }
+    .tab-btn.is-active {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--surface-container);
+      box-shadow: var(--glow-primary);
+      text-shadow: var(--glow-text);
     }
 
-    /* Filter Bar & Master Release Table */
-    .filter-controls {
+    .filter-row {
       display: grid;
-      grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)) auto;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) auto;
       gap: var(--space-md);
       align-items: end;
-      margin-bottom: var(--space-md);
     }
     .field-group {
       display: flex;
@@ -633,242 +465,236 @@
       letter-spacing: 0.08em;
       color: var(--on-surface-variant);
     }
-    .neon-input, .neon-select {
+    .field-input, .field-select {
       width: 100%;
       min-height: 44px;
       padding: var(--space-sm) var(--space-md);
       background: var(--surface-container-low);
       color: var(--on-surface);
       border: 1px solid var(--outline-variant);
-      border-bottom: 2px solid var(--primary);
+      border-bottom: 1px solid var(--primary);
       border-radius: var(--rounded);
       font-family: var(--font-body);
-      font-size: 0.9rem;
-      transition: border-color var(--dur-micro) var(--ease-out),
-                  box-shadow var(--dur-micro) var(--ease-out);
+      font-size: var(--body-size);
+      transition: border-color var(--dur-short) var(--ease-out),
+                  box-shadow var(--dur-short) var(--ease-out);
     }
-    .neon-select {
+    .field-select {
       padding-right: var(--space-xl);
-      cursor: pointer;
     }
-    .neon-input:focus, .neon-select:focus {
-      outline: none;
+    .field-input:focus, .field-select:focus {
       border-color: var(--primary);
       box-shadow: var(--glow-primary);
+      outline: none;
     }
 
-    .subgenre-pills {
+    /* Stream URL Drawer / Banner */
+    .stream-inspector {
+      background: var(--surface-container-low);
+      border: var(--neon-border-cyan);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
       display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .stream-inspector-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
       gap: var(--space-sm);
-      margin-bottom: var(--space-md);
     }
-
-    .table-scroll {
-      overflow-x: auto;
+    .stream-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+    .stream-card {
+      background: var(--surface-container);
       border: 1px solid var(--outline-variant);
       border-radius: var(--rounded);
-      background: var(--surface-container-low);
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
     }
-    table.release-table {
+    .stream-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .stream-platform {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .stream-url-text {
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      color: var(--on-surface-variant);
+      word-break: break-all;
+    }
+
+    /* Leaderboard Table */
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--surface-container);
+      border: var(--neon-border);
+      border-radius: var(--rounded-lg);
+    }
+    table.leaderboard {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.875rem;
     }
-    .release-table thead th {
-      position: sticky;
-      top: 0;
-      background: var(--surface-container-high);
-      color: var(--on-surface-variant);
+    table.leaderboard th {
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border-bottom: 1px solid var(--outline);
       font-family: var(--font-label);
-      font-size: 0.72rem;
+      font-size: var(--label-size);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      padding: 0.75rem 0.85rem;
-      border-bottom: 1px solid var(--outline);
+      color: var(--on-surface-variant);
       white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
     }
-    .release-table thead th:hover {
-      color: var(--secondary);
-    }
-    .release-table tbody tr {
+    table.leaderboard td {
+      padding: var(--space-sm) var(--space-md);
       border-bottom: 1px solid var(--outline-variant);
-      cursor: pointer;
-      transition: background-color var(--dur-micro) var(--ease-out);
+      vertical-align: middle;
     }
-    .release-table tbody tr:nth-child(even) {
-      background: color-mix(in srgb, var(--surface-container) 55%, transparent);
+    table.leaderboard tbody tr:nth-child(even) {
+      background: var(--surface-container-low);
     }
-    .release-table tbody tr:hover {
-      background: var(--surface-container-high);
-    }
-    .release-table tbody tr.is-playing {
+    table.leaderboard tbody tr.is-selected {
       background: var(--surface-container-high);
       box-shadow: inset 3px 0 0 var(--primary);
     }
-    .release-table td {
-      padding: 0.7rem 0.85rem;
-      vertical-align: middle;
-    }
-    .mono-cell {
+    .rank-cell {
       font-family: var(--font-label);
-      font-size: 0.78rem;
-      color: var(--on-surface-variant);
+      font-weight: 700;
       white-space: nowrap;
     }
-
-    /* Intelligence Hub: Charts, Reddit, News */
-    .intel-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-lg);
-      align-items: start;
+    .rank-num {
+      color: var(--on-surface);
+      font-size: var(--subhead-size);
     }
-    .feed-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-sm);
-      max-height: 460px;
-      overflow-y: auto;
-      padding-right: 2px;
+    .rank-num.is-top3 {
+      color: var(--primary);
+      text-shadow: var(--glow-text);
     }
-    .feed-card {
-      background: var(--surface-container-low);
-      border: 1px solid var(--outline-variant);
-      border-radius: var(--rounded);
-      padding: var(--space-sm) var(--space-md);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    .rank-delta {
+      display: inline-block;
+      margin-left: var(--space-xs);
+      font-size: 0.75rem;
+      color: var(--secondary);
     }
-    .feed-card.is-highlighted {
-      border-left: 2px solid var(--primary);
+    .rank-delta.is-new {
+      color: var(--tertiary);
     }
-    .feed-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-    .feed-title {
+    .track-title {
       font-weight: 600;
-      font-size: 0.9rem;
       color: var(--on-surface);
     }
-    .feed-sub {
-      font-size: 0.8125rem;
+    .track-artist {
+      font-size: 0.875rem;
       color: var(--on-surface-variant);
     }
-    .shortcut-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: var(--space-xs);
-      margin-top: var(--space-xs);
-      padding-top: var(--space-xs);
-      border-top: 1px solid var(--outline-variant);
-    }
-    .shortcut-path {
-      font-family: var(--font-label);
-      font-size: 0.7rem;
-      color: var(--secondary);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 72%;
-    }
-
-    /* Status / Toast Banner */
-    .status-toast {
-      position: fixed;
-      bottom: var(--space-lg);
-      right: var(--space-lg);
-      z-index: 40;
-      background: var(--surface-container-high);
-      border: var(--cyan-border-lit);
-      box-shadow: var(--glow-secondary);
-      color: var(--secondary);
+    .date-cell {
       font-family: var(--font-label);
       font-size: var(--label-size);
-      padding: var(--space-sm) var(--space-md);
+      color: var(--secondary);
+      white-space: nowrap;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border: 1px solid var(--outline);
       border-radius: var(--rounded);
-      opacity: 0;
-      transform: translateY(8px);
-      pointer-events: none;
-      transition: opacity var(--dur-short) var(--ease-out),
-                  transform var(--dur-short) var(--ease-out);
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      white-space: nowrap;
     }
-    .status-toast.is-visible {
-      opacity: 1;
-      transform: translateY(0);
+    .badge.is-pink {
+      border-color: var(--primary);
+      color: var(--primary);
     }
-
+    .badge.is-cyan {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+    .badge.is-yellow {
+      border-color: var(--tertiary);
+      color: var(--tertiary);
+    }
+    .sources-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+    .score-val {
+      font-family: var(--font-label);
+      font-weight: 700;
+      color: var(--on-surface);
+      white-space: nowrap;
+    }
+    .actions-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: nowrap;
+    }
     .empty-state {
       padding: var(--space-xl);
       text-align: center;
-      border: 1px dashed var(--outline);
-      border-radius: var(--rounded);
       color: var(--on-surface-variant);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-sm);
     }
-
-    .footer-sources {
+    .footer-meta {
+      padding-top: var(--space-md);
       border-top: 1px solid var(--outline-variant);
-      padding-top: var(--space-lg);
-      color: var(--on-surface-variant);
-      font-size: 0.8125rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       gap: var(--space-md);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 1080px) {
-      .hero-header,
-      .deck-analytics-grid,
-      .intel-grid {
-        grid-template-columns: 1fr;
-      }
-      .hero-meta-bar {
-        justify-content: flex-start;
-      }
+    @media (max-width: 960px) {
       .kpi-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .filter-controls {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .deck-grid {
+        grid-template-columns: 1fr;
+      }
+      .filter-row {
+        grid-template-columns: 1fr 1fr;
       }
     }
 
     @media (max-width: 640px) {
       .page-grid {
-        grid-template-columns: 1fr;
         padding: var(--space-md);
         gap: var(--space-md);
       }
-      .kpi-grid,
-      .filter-controls,
-      .deck-stage,
-      .deck-controls {
+      .kpi-grid {
         grid-template-columns: 1fr;
       }
-      .deck-art-frame {
-        width: 100%;
-        height: 160px;
+      .filter-row {
+        grid-template-columns: 1fr;
       }
-      .status-toast {
-        left: var(--space-md);
-        right: var(--space-md);
-        bottom: var(--space-md);
+      .header-actions {
+        align-items: flex-start;
       }
     }
 
@@ -881,2032 +707,753 @@
     }
   </style>
 </head>
-<body class="page">
-  <div class="page-grid">
+<body>
+  <main class="page-grid">
     <!-- HEADER -->
-    <header class="hero-header">
-      <div>
-        <div class="kicker">
-          <i data-lucide="radio" aria-hidden="true" style="width:14px;height:14px;"></i>
-          <span>BASS INTELLIGENCE // WEEK OF NOV 13–14, 2026</span>
+    <header class="hud-header">
+      <div class="brand-cluster">
+        <div class="brand-row">
+          <h1 class="brand-name">JANICE</h1>
+          <span class="brand-version">(v.001)</span>
         </div>
-        <h1>Weekly Dubstep Release Tracker</h1>
-        <p class="hero-lede">
-          Unified release monitor spanning Reddit r/dubstep NMF #316–#310, BeatTracker Beatport &amp; Spotify Top 10 charts, r/realdubstep November vinyl/digital drops, and editorial feeds from UKF, By The Wavs, and We Rave You.
-        </p>
+        <div class="clock-bar" aria-live="polite">
+          <span id="live-date">FRI, NOV 13, 2026</span>
+          <span class="clock-sep">//</span>
+          <span id="live-clock" class="clock-time">00:00:00</span>
+          <span class="clock-sep">//</span>
+          <span>TOP 100 DUBSTEP LEADERBOARD</span>
+        </div>
       </div>
-      <div class="hero-meta-bar">
-        <button type="button" class="btn-neon is-cyan" onclick="exportCrateCsv()">
-          <i data-lucide="download" aria-hidden="true" style="width:15px;height:15px;"></i>
-          <span>Export Crate CSV</span>
+      <div class="header-actions">
+        <button type="button" class="btn-neon" id="refresh-btn" onclick="refreshLeaderboard()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+            <polyline points="21 3 21 9 15 9"/>
+          </svg>
+          Refresh Top 100
         </button>
-        <button type="button" id="reset-crate-btn" class="btn-neon" onclick="handleResetCrate(this)">
-          <i data-lucide="rotate-ccw" aria-hidden="true" style="width:15px;height:15px;"></i>
-          <span>Reset Crate</span>
-        </button>
+        <div class="sync-status" id="sync-status">SYNCED: 8 SOURCES ACTIVE</div>
       </div>
     </header>
 
-    <!-- KPI ROW -->
-    <section aria-label="Dashboard Summary Metrics" class="kpi-grid">
-      <article class="neon-panel kpi-card">
-        <span class="mono-label">Cataloged Releases</span>
-        <span class="kpi-value neon-text" id="kpi-total-count">0</span>
-        <span class="kpi-caption">Across NMF #316–#310, BeatTracker &amp; Nov 140</span>
-      </article>
-      <article class="neon-panel is-cyan kpi-card">
-        <span class="mono-label">NMF #316 Fresh Drops</span>
-        <span class="kpi-value cyan-text" id="kpi-nmf316-count">0</span>
-        <span class="kpi-caption">Curated Nov 14, 2026 singles, EPs &amp; LPs</span>
-      </article>
-      <article class="neon-panel is-neutral kpi-card">
-        <span class="mono-label">#1 Chart Placement</span>
-        <span class="kpi-value" style="color:var(--tertiary);">ZAAGSTEP</span>
-        <span class="kpi-caption">Dr Donk (Disciple) &amp; YDG — Throw Sum Mo'</span>
-      </article>
-      <article class="neon-panel is-cyan kpi-card">
-        <span class="mono-label">Saved in My Crate</span>
-        <span class="kpi-value cyan-text" id="kpi-crate-count">0</span>
-        <span class="kpi-caption">Persisted across sessions via workspace state</span>
-      </article>
+    <!-- KPI SUMMARY STRIP -->
+    <section class="kpi-grid" aria-label="Leaderboard Key Metrics">
+      <div class="neon-panel kpi-card">
+        <span class="kpi-label">#1 Ranked Drop</span>
+        <span class="kpi-value" id="kpi-top-track">—</span>
+        <span class="kpi-caption" id="kpi-top-artist">Loading leader…</span>
+      </div>
+      <div class="neon-panel is-cyan kpi-card">
+        <span class="kpi-label">Active Top 100 View</span>
+        <span class="kpi-value" id="kpi-visible-count">100</span>
+        <span class="kpi-caption" id="kpi-mode-label">Most Hyped List</span>
+      </div>
+      <div class="neon-panel kpi-card">
+        <span class="kpi-label">Latest Release Date</span>
+        <span class="kpi-value" id="kpi-latest-date">2026-11-14</span>
+        <span class="kpi-caption">NMF #316 &amp; Nov 2026 Drops</span>
+      </div>
+      <div class="neon-panel is-cyan kpi-card">
+        <span class="kpi-label">Compiled Sources</span>
+        <span class="kpi-value">8 Feeds</span>
+        <span class="kpi-caption">NMF, BeatTracker, Beatport, UKF, SC, Spotify, BTW, WRY</span>
+      </div>
     </section>
 
-    <!-- EMBEDDED PLAYER & ANALYTICS -->
-    <section aria-label="Interactive Audio Deck and Subgenre Breakdown" class="deck-analytics-grid">
-      <!-- Embedded Audio/Video Synth Player -->
-      <article class="neon-panel">
-        <div class="deck-header">
-          <div>
-            <div class="kicker">
-              <i data-lucide="disc-3" aria-hidden="true" style="width:14px;height:14px;"></i>
-              <span>EMBEDDED DECK // INTERACTIVE SYNTH &amp; PREMIERE STREAM</span>
-            </div>
-            <h2 id="deck-heading" style="margin-top:4px;">Ready to Audition</h2>
-          </div>
-          <div class="mode-switch" role="group" aria-label="Player Embed Mode">
-            <button type="button" id="mode-sc-btn" class="btn-neon btn-compact is-cyan is-active" onclick="setDeckMode('soundcloud')">
-              <i data-lucide="audio-waveform" aria-hidden="true" style="width:14px;height:14px;"></i>
-              <span>SoundCloud Player</span>
-            </button>
-            <button type="button" id="mode-yt-btn" class="btn-neon btn-compact" onclick="setDeckMode('youtube')">
-              <i data-lucide="tv" aria-hidden="true" style="width:14px;height:14px;"></i>
-              <span>YouTube Premiere</span>
-            </button>
-          </div>
+    <!-- ASYMMETRIC TELEMETRY & SYNTH PREVIEW DECK -->
+    <section class="deck-grid" aria-label="Telemetry and Audio Preview">
+      <div class="neon-panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Source Distribution in Active Top 100</h2>
+          <span class="kicker" id="chart-kicker">Most Hyped</span>
         </div>
+        <div class="chart-box" id="source-chart"></div>
+      </div>
 
-        <div class="deck-stage">
-          <div class="deck-art-frame" id="deck-art-container" aria-hidden="true"></div>
-          <div class="deck-info">
-            <div class="deck-badges" id="deck-badges"></div>
-            <h3 id="deck-track-title" style="font-size:1.35rem;">Select a release</h3>
-            <p id="deck-artist-label" style="color:var(--on-surface-variant);">—</p>
-            <p id="deck-notes" style="font-size:0.85rem;color:var(--on-surface-variant);"></p>
+      <div class="neon-panel is-cyan audio-deck">
+        <div>
+          <div class="panel-head">
+            <h2 class="panel-title">JANICE 140 BPM Synth Preview</h2>
+            <span class="kicker" id="deck-status">STANDBY</span>
           </div>
+          <p class="deck-track-title" id="deck-title">Select any track to preview</p>
+          <p class="deck-track-meta" id="deck-meta">Subgenre synth engine: 140 / Deep, Riddim, Brostep, Color Bass</p>
         </div>
-
-        <div class="canvas-viz-wrap">
-          <canvas id="deck-canvas" aria-label="Real-time audio waveform and frequency visualizer"></canvas>
+        <div class="eq-bars" id="eq-bars" aria-hidden="true">
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
         </div>
-
         <div class="deck-controls">
-          <div class="transport-row">
-            <button type="button" class="btn-neon btn-compact" onclick="stepTrack(-1)" aria-label="Previous release">
-              <i data-lucide="skip-back" aria-hidden="true" style="width:15px;height:15px;"></i>
-            </button>
-            <button type="button" id="play-toggle-btn" class="btn-neon is-cyan" onclick="togglePlay()">
-              <i data-lucide="play" aria-hidden="true" style="width:15px;height:15px;"></i>
-              <span id="play-btn-label">Play Synth</span>
-            </button>
-            <button type="button" class="btn-neon btn-compact" onclick="stepTrack(1)" aria-label="Next release">
-              <i data-lucide="skip-forward" aria-hidden="true" style="width:15px;height:15px;"></i>
-            </button>
-          </div>
-
-          <div class="scrubber-wrap">
-            <div class="scrubber-meta">
-              <span id="deck-time-cur">0:00</span>
-              <span id="deck-mode-status">SOUNDCLOUD WAVEFORM ENGINE // TONE.JS</span>
-              <span id="deck-time-dur">0:32</span>
-            </div>
-            <label for="deck-scrubber" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">Track playback position</label>
-            <input type="range" id="deck-scrubber" min="0" max="32" step="0.5" value="0" oninput="scrubDeck(this.value)">
-          </div>
-
-          <div class="field-group" style="min-width:120px;">
-            <label for="deck-cutoff" class="field-label">Sub Filter (<span id="cutoff-val">900</span> Hz)</label>
-            <input type="range" id="deck-cutoff" min="120" max="2400" step="20" value="900" oninput="updateFilterCutoff(this.value)">
-          </div>
+          <button type="button" class="btn-neon is-cyan" id="deck-toggle-btn" onclick="toggleDeckPlayback()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Play Preview
+          </button>
+          <button type="button" class="btn-compact" onclick="stopAudioPreview()">Stop</button>
         </div>
-
-        <div class="deck-footer-bar">
-          <div>
-            <span class="mono-label" style="margin-right:8px;">Source Handle:</span>
-            <span class="uri-readout" id="deck-uri">open.spotify.com/album/2kxqoTlptNE2OJ5uk4TDmT</span>
-          </div>
-          <div style="display:flex;gap:var(--space-sm);">
-            <button type="button" class="btn-neon btn-compact is-cyan" onclick="copyCurrentUri()">
-              <i data-lucide="copy" aria-hidden="true" style="width:14px;height:14px;"></i>
-              <span>Copy Handle</span>
-            </button>
-            <button type="button" id="deck-crate-btn" class="btn-neon btn-compact" onclick="toggleCrateCurrent()">
-              <i data-lucide="bookmark" aria-hidden="true" style="width:14px;height:14px;"></i>
-              <span>Save to Crate</span>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Subgenre Distribution & Crate Drawer -->
-      <aside class="neon-panel is-cyan analytics-panel" aria-label="Subgenre Distribution and Saved Crate">
-        <div>
-          <div class="kicker">
-            <i data-lucide="bar-chart-3" aria-hidden="true" style="width:14px;height:14px;"></i>
-            <span>SUBGENRE TELEMETRY</span>
-          </div>
-          <h2 style="margin-top:4px;">Drops by Subgenre</h2>
-          <p class="section-sub">Click any bar to cross-filter the release table below.</p>
-        </div>
-
-        <div class="chart-box">
-          <canvas id="subgenre-chart"></canvas>
-        </div>
-
-        <div class="crate-mini">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="mono-label">My Saved Crate</span>
-            <button type="button" id="crate-filter-btn" class="btn-neon btn-compact is-cyan" onclick="toggleCrateOnlyFilter()">
-              <span>Filter Table</span>
-            </button>
-          </div>
-          <div class="crate-list" id="crate-list"></div>
-        </div>
-      </aside>
+      </div>
     </section>
 
-    <!-- FEATURED ALBUM & ARTIST ARTWORK CARDS -->
-    <section aria-label="Featured Release Artwork">
-      <div class="section-head">
-        <div>
-          <div class="kicker">
-            <i data-lucide="layers" aria-hidden="true" style="width:14px;height:14px;"></i>
-            <span>FEATURED VISUALS // ALBUMS, EPs &amp; CHART LEADERS</span>
-          </div>
-          <h2>Featured Artwork &amp; Flagship Drops</h2>
-          <p class="section-sub">Procedural geometric covers for this month's top BeatTracker releases, NMF #316 albums, and SoundCloud premieres.</p>
-        </div>
+    <!-- GENERATOR TABS & FILTERS -->
+    <section class="controls-section" aria-label="Top 100 List Generators and Filters">
+      <div class="tab-strip" role="tablist" aria-label="Leaderboard Generators">
+        <button type="button" role="tab" class="tab-btn is-active" id="tab-hyped" aria-selected="true" onclick="setActiveTab('hyped')">Most Hyped</button>
+        <button type="button" role="tab" class="tab-btn" id="tab-reviewed" aria-selected="false" onclick="setActiveTab('reviewed')">Best Reviewed</button>
+        <button type="button" role="tab" class="tab-btn" id="tab-latest" aria-selected="false" onclick="setActiveTab('latest')">Latest Drops</button>
+        <button type="button" role="tab" class="tab-btn" id="tab-charts" aria-selected="false" onclick="setActiveTab('charts')">Chart Toppers</button>
       </div>
-      <div class="artwork-grid" id="featured-artwork-grid"></div>
+
+      <div class="filter-row">
+        <div class="field-group">
+          <label class="field-label" for="search-input">Search Artist, Track, or Label</label>
+          <input type="text" id="search-input" class="field-input" placeholder="e.g. Space Laces, ZAAGSTEP, Subtronics…" oninput="applyFilters()">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="source-select">Source Feed</label>
+          <select id="source-select" class="field-select" onchange="applyFilters()">
+            <option value="ALL">All 8 Sources</option>
+            <option value="r/dubstep NMF">r/dubstep NMF</option>
+            <option value="BeatTracker">BeatTracker</option>
+            <option value="Beatport">Beatport</option>
+            <option value="Spotify">Spotify</option>
+            <option value="SoundCloud">SoundCloud</option>
+            <option value="UKF">UKF</option>
+            <option value="By The Wavs">By The Wavs</option>
+            <option value="We Rave You">We Rave You</option>
+            <option value="r/realdubstep">r/realdubstep</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="subgenre-select">Subgenre</label>
+          <select id="subgenre-select" class="field-select" onchange="applyFilters()">
+            <option value="ALL">All Subgenres</option>
+            <option value="Brostep">Brostep</option>
+            <option value="140 / Deep">140 / Deep</option>
+            <option value="Riddim">Riddim</option>
+            <option value="Color Bass">Color Bass</option>
+          </select>
+        </div>
+        <button type="button" class="btn-neon is-cyan" onclick="resetFilters()">Reset Filters</button>
+      </div>
     </section>
 
-    <!-- SUBGENRE-FILTERABLE RELEASE TABLE -->
-    <section aria-label="Subgenre Release Explorer" class="neon-panel">
-      <div class="section-head">
+    <!-- STREAMING URL INSPECTOR -->
+    <section class="stream-inspector" id="stream-inspector" aria-label="Streaming URL Links Inspector">
+      <div class="stream-inspector-head">
         <div>
-          <div class="kicker">
-            <i data-lucide="sliders-horizontal" aria-hidden="true" style="width:14px;height:14px;"></i>
-            <span>CATALOG MATRIX // MULTI-SUBGENRE INDEX</span>
-          </div>
-          <h2>Weekly Release Explorer</h2>
-          <p class="section-sub">Click any row to load its subgenre synth patch and artwork into the deck above.</p>
+          <span class="kicker">Direct Streaming URLs</span>
+          <strong id="inspector-track-name" style="margin-left: var(--space-sm);">Click &ldquo;Links&rdquo; on any track to inspect or copy URLs</strong>
         </div>
-        <span class="mono-label" id="table-showing-label">Showing 0 releases</span>
+        <span class="sync-status" id="copy-feedback"></span>
       </div>
+      <div class="stream-links-grid" id="stream-links-grid"></div>
+    </section>
 
-      <div class="subgenre-pills" id="subgenre-pills" role="group" aria-label="Subgenre quick filter"></div>
-
-      <div class="filter-controls">
-        <div class="field-group">
-          <label for="search-input" class="field-label">Search Artist, Track, or Label</label>
-          <input type="text" id="search-input" class="neon-input" placeholder="e.g. Space Laces, DPMO, Chime, Tectonic…" oninput="handleSearchInput(this.value)">
-        </div>
-        <div class="field-group">
-          <label for="week-select" class="field-label">Source / Issue</label>
-          <select id="week-select" class="neon-select" onchange="handleWeekChange(this.value)">
-            <option value="All">All Sources &amp; Weeks</option>
-            <option value="NMF #316 (11/14)">NMF #316 (Nov 14)</option>
-            <option value="NMF #315 (11/07)">NMF #315 (Nov 7)</option>
-            <option value="NMF #314 (10/31)">NMF #314 (Oct 31)</option>
-            <option value="NMF #313 (10/24)">NMF #313 (Oct 24)</option>
-            <option value="NMF #310–312">NMF #310–312 (Oct)</option>
-            <option value="r/realdubstep Nov">r/realdubstep Nov</option>
-            <option value="BeatTracker / SC">BeatTracker &amp; SoundCloud</option>
-          </select>
-        </div>
-        <div class="field-group">
-          <label for="format-select" class="field-label">Release Format</label>
-          <select id="format-select" class="neon-select" onchange="handleFormatChange(this.value)">
-            <option value="All">All Formats</option>
-            <option value="Single">Single</option>
-            <option value="EP">EP</option>
-            <option value="Album">Album / LP</option>
-          </select>
-        </div>
-        <div class="field-group">
-          <label for="sort-select" class="field-label">Sort Order</label>
-          <select id="sort-select" class="neon-select" onchange="handleSortSelect(this.value)">
-            <option value="date-desc">Release Date (Newest)</option>
-            <option value="date-asc">Release Date (Oldest)</option>
-            <option value="artist-asc">Artist (A–Z)</option>
-            <option value="bpm-desc">BPM (High–Low)</option>
-          </select>
-        </div>
-        <button type="button" class="btn-neon" onclick="clearAllFilters()">
-          <span>Clear</span>
-        </button>
-      </div>
-
-      <div class="table-scroll">
-        <table class="release-table">
+    <!-- TOP 100 LEADERBOARD TABLE -->
+    <section aria-label="Top 100 Leaderboard Table">
+      <div class="table-wrap">
+        <table class="leaderboard">
           <thead>
             <tr>
-              <th scope="col" onclick="toggleColSort('artist')">Artist</th>
-              <th scope="col" onclick="toggleColSort('title')">Track / Release</th>
-              <th scope="col" onclick="toggleColSort('label')">Label</th>
-              <th scope="col" onclick="toggleColSort('subgenre')">Subgenre</th>
-              <th scope="col" onclick="toggleColSort('format')">Format</th>
-              <th scope="col" onclick="toggleColSort('date')">Date</th>
-              <th scope="col">Source / Chart</th>
-              <th scope="col">Actions</th>
+              <th>Rank</th>
+              <th>Track &amp; Artist</th>
+              <th>Subgenre</th>
+              <th>Release Date</th>
+              <th>Compiled Sources</th>
+              <th id="metric-col-head">Hype Score</th>
+              <th>Play &amp; Stream Links</th>
             </tr>
           </thead>
-          <tbody id="release-tbody"></tbody>
+          <tbody id="leaderboard-body"></tbody>
         </table>
       </div>
-      <div id="table-empty-state" class="empty-state" style="display:none;margin-top:var(--space-md);">
-        <p>No releases match the current subgenre, source, or search filter.</p>
-        <button type="button" class="btn-neon is-cyan" onclick="clearAllFilters()">Reset All Filters</button>
-      </div>
     </section>
 
-    <!-- REAL-TIME CHARTS, REDDIT PULSE & RSS NEWS HUB -->
-    <section aria-label="Charts, Reddit Community and Bass News Feeds" class="intel-grid">
-      <!-- Column 1: BeatTracker Top Charts -->
-      <article class="neon-panel is-cyan">
-        <div class="section-head" style="margin-bottom:var(--space-sm);">
-          <div>
-            <div class="kicker">
-              <i data-lucide="trending-up" aria-hidden="true" style="width:14px;height:14px;"></i>
-              <span>BEATTRACKER // SPOTIFY &amp; BEATPORT</span>
-            </div>
-            <h3 style="margin-top:4px;">Top 10 Dubstep Charts</h3>
-          </div>
-          <div class="mode-switch">
-            <button type="button" id="chart-tracks-btn" class="btn-neon btn-compact is-cyan is-active" onclick="setChartTab('tracks')">Tracks</button>
-            <button type="button" id="chart-releases-btn" class="btn-neon btn-compact" onclick="setChartTab('releases')">Releases</button>
-          </div>
-        </div>
-        <div class="feed-list" id="beattracker-list"></div>
-      </article>
-
-      <!-- Column 2: Reddit Community Pulse -->
-      <article class="neon-panel">
-        <div class="section-head" style="margin-bottom:var(--space-sm);">
-          <div>
-            <div class="kicker">
-              <i data-lucide="message-square" aria-hidden="true" style="width:14px;height:14px;"></i>
-              <span>REDDIT COMMUNITY PULSE</span>
-            </div>
-            <h3 style="margin-top:4px;">r/dubstep &amp; r/realdubstep</h3>
-          </div>
-          <div class="mode-switch">
-            <button type="button" id="reddit-nmf-btn" class="btn-neon btn-compact is-active" onclick="setRedditTab('nmf')">r/dubstep NMF</button>
-            <button type="button" id="reddit-real-btn" class="btn-neon btn-compact" onclick="setRedditTab('real')">r/realdubstep</button>
-          </div>
-        </div>
-        <div class="feed-list" id="reddit-list"></div>
-      </article>
-
-      <!-- Column 3: News & Archive RSS Feed -->
-      <article class="neon-panel is-neutral">
-        <div class="section-head" style="margin-bottom:var(--space-sm);">
-          <div>
-            <div class="kicker">
-              <i data-lucide="rss" aria-hidden="true" style="width:14px;height:14px;"></i>
-              <span>EDITORIAL &amp; ARCHIVE FEEDS</span>
-            </div>
-            <h3 style="margin-top:4px;">UKF • We Rave You • By The Wavs</h3>
-          </div>
-          <div class="field-group" style="min-width:130px;">
-            <label for="news-outlet-select" class="field-label">Outlet Filter</label>
-            <select id="news-outlet-select" class="neon-select" style="min-height:36px;padding:4px 28px 4px 8px;" onchange="setNewsOutlet(this.value)">
-              <option value="All">All Outlets</option>
-              <option value="We Rave You">We Rave You</option>
-              <option value="UKF Archive">UKF Archive</option>
-              <option value="By The Wavs">By The Wavs</option>
-            </select>
-          </div>
-        </div>
-        <div class="feed-list" id="news-list"></div>
-      </article>
-    </section>
-
-    <!-- PLAIN-TEXT SOURCES & SHORTCUT DIRECTORY -->
-    <footer class="footer-sources">
-      <div>
-        <strong>Sources Grounding This Dashboard:</strong>
-        <span>Reddit r/dubstep New Music Friday threads (#316–#301 by u/Litt_Kiddie, playlists wubly &amp; Hypers); Reddit r/realdubstep November 2026 release calendar &amp; sound system mixes; BeatTracker Spotify &amp; Beatport Dubstep Top 100 charts; SoundCloud Subtronics feed; UKF Dubstep Archives; By The Wavs; We Rave You (Nov 9–13, 2026).</span>
-      </div>
-      <div class="mono-label">
-        SYNTH ENGINE: TONE.JS WEB AUDIO // CHARTS: CHART.JS // STATE: NOTEBOOK SHIM API
-      </div>
+    <!-- FOOTER SOURCES NOTE -->
+    <footer class="footer-meta">
+      <span>Compiled from: r/dubstep NMF (#302–#316), r/realdubstep, BeatTracker (Spotify &amp; Beatport Top 100), UKF Dubstep Archives, SoundCloud (Subtronics), By The Wavs, and We Rave You.</span>
+      <span>JANICE (v.001) Standalone Dashboard</span>
     </footer>
-  </div>
-
-  <div id="status-toast" class="status-toast" role="status" aria-live="polite"></div>
-
-  <api-shim></api-shim>
+  </main>
 
   <script>
-    // =========================================================================
-    // DATA: 100% Grounded in Provided Sources (Backtick template literals)
-    // =========================================================================
-    const RELEASES = [
-      // NMF #316 (Nov 14, 2026)
-      {
-        id: `nmf316-calcium-fyl`,
-        artist: `Calcium`,
-        title: `FYL`,
-        label: `Independent / NMF #316`,
-        subgenre: `Brostep`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 150,
-        uri: `open.spotify.com/track/6cpSalprVCVWeVnm1tpbDy`,
-        notes: `Lead single on u/Litt_Kiddie's NMF #316 roundup.`
-      },
-      {
-        id: `nmf316-moodygood-bouncefm`,
-        artist: `Moody Good & Dr. Ushūu`,
-        title: `Bounce FM`,
-        label: `Independent / NMF #316`,
-        subgenre: `Brostep`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 145,
-        uri: `open.spotify.com/track/3TCkKDvs4C2ZFhZ9bu6b5K`,
-        notes: `UK/FR heavy bass collaboration featured in NMF #316.`
-      },
-      {
-        id: `nmf316-dirtmonkey-wobblestomper`,
-        artist: `Dirt Monkey & Zouth`,
-        title: `Wobble Stomper`,
-        label: `Independent / NMF #316`,
-        subgenre: `140 / Deep`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 140,
-        uri: `open.spotify.com/track/3aY5Tee3T93RV8WVlPAIfS`,
-        notes: `Classic wobbly 140 bassline pressure.`
-      },
-      {
-        id: `nmf316-monxx-accessdenied`,
-        artist: `Monxx`,
-        title: `ACCESS DENIED`,
-        label: `Independent / NMF #316`,
-        subgenre: `Riddim`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 140,
-        uri: `open.spotify.com/track/0M01PG3YPyjceDYyRIcRYx`,
-        notes: `Minimalist repetitive riddim chop.`
-      },
-      {
-        id: `nmf316-ipsiom-halloweentown`,
-        artist: `Ipsiom`,
-        title: `Halloweentown`,
-        label: `Independent / NMF #316`,
-        subgenre: `Colorbass`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 146,
-        uri: `open.spotify.com/track/5mjnNjEKDIgv6gJGCozuEL`,
-        notes: `Vibrant harmonic colorbass sound design.`
-      },
-      {
-        id: `nmf316-shadowprince-savior`,
-        artist: `SHADOW PRINCE & Nokturnal`,
-        title: `SAVIOR`,
-        label: `Independent / NMF #316`,
-        subgenre: `Melodic`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 142,
-        uri: `open.spotify.com/track/1ZLuGl7llsAslvWpvHkAa3`,
-        notes: `Soaring melodic dubstep drop.`
-      },
-      {
-        id: `nmf316-hydraulix-higher`,
-        artist: `Hydraulix & SubDocta`,
-        title: `Higher`,
-        label: `Independent / NMF #316`,
-        subgenre: `140 / Deep`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 140,
-        uri: `open.spotify.com/track/6JYyglUOoup8V1Nyzq2URt`,
-        notes: `Sub-heavy west-coast/OZ 140 hybrid.`
-      },
-      {
-        id: `nmf316-severe-nullstate`,
-        artist: `Severe`,
-        title: `Null State`,
-        label: `Independent / NMF #316`,
-        subgenre: `Tearout`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 150,
-        uri: `open.spotify.com/track/4QTPF0QAWmgLrbfhg5vxQa`,
-        notes: `Metallic gun-shot tearout transients.`
-      },
-      {
-        id: `nmf316-orbiix-galactus`,
-        artist: `Orbiix`,
-        title: `Galactus`,
-        label: `Independent / NMF #316`,
-        subgenre: `Riddim`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 140,
-        uri: `open.spotify.com/track/59X21hfMgTkUDoZTqMjOjK`,
-        notes: `Quarter-note riddim bounce.`
-      },
-      {
-        id: `nmf316-aceaura-dune`,
-        artist: `Ace Aura`,
-        title: `Dune`,
-        label: `OTT Pick / NMF #316`,
-        subgenre: `Colorbass`,
-        format: `Single`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316 (OTT)`,
-        bpm: 148,
-        uri: `open.spotify.com/track/0z2ndYYpza0Adnq1J2B53J`,
-        notes: `Featured Off-Topic Tune by colorbass pioneer Ace Aura.`
-      },
-      {
-        id: `nmf316-pyke-stuckinlimbo`,
-        artist: `PYKE`,
-        title: `STUCK IN LIMBO`,
-        label: `Independent / NMF #316`,
-        subgenre: `Riddim`,
-        format: `EP`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 140,
-        uri: `open.spotify.com/album/2qrdVts9yJ0FLX4Jl35tp5`,
-        notes: `Heavy trench / riddim EP drop.`
-      },
-      {
-        id: `nmf316-knoir-receivereffect`,
-        artist: `Knoir`,
-        title: `Receiver Effect EP`,
-        label: `Independent / NMF #316`,
-        subgenre: `Colorbass`,
-        format: `EP`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 145,
-        uri: `open.spotify.com/album/3DCviOvgSrKfBTqY3dx2aP`,
-        notes: `Follow-up EP after single 'energy vampire'.`
-      },
-      {
-        id: `nmf316-doil-burn`,
-        artist: `DOIL`,
-        title: `BURN EP`,
-        label: `Independent / NMF #316`,
-        subgenre: `Tearout`,
-        format: `EP`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 150,
-        uri: `open.spotify.com/album/5iC6bG2LaYH4iF7PTJsxKL`,
-        notes: `High-distortion tearout EP.`
-      },
-      {
-        id: `nmf316-dpmo-vol5`,
-        artist: `FuntCase, MVRDA, TRVCY, Versa & More`,
-        title: `FuntCase Presents: DPMO, Vol. 5`,
-        label: `DPMO`,
-        subgenre: `Riddim`,
-        format: `Album`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `BeatTracker #2 Release / NMF #316`,
-        bpm: 140,
-        uri: `open.spotify.com/album/0hpMwA7HQezUjONwi7Cy84`,
-        notes: `24-artist compilation featuring AD, AKIRAH, Aweminus, Inaktiv, Beastboi, SweetTooth & Mile32.`,
-        featured: true,
-        rankBadge: `#2 TOP RELEASE`
-      },
-      {
-        id: `nmf316-levity-escapism2`,
-        artist: `Levity`,
-        title: `Escapism Vol. II`,
-        label: `Independent / NMF #316`,
-        subgenre: `Brostep`,
-        format: `Album`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 145,
-        uri: `open.spotify.com/album/4aqUvBOO4ieaXIuXDrvAW2`,
-        notes: `Flagship LP blending festival brostep and melodic hooks.`,
-        featured: true,
-        rankBadge: `NMF #316 LP`
-      },
-      {
-        id: `nmf316-ravenscoon-sanctuary`,
-        artist: `Ravenscoon`,
-        title: `SANCTUARY`,
-        label: `Independent / NMF #316`,
-        subgenre: `140 / Deep`,
-        format: `Album`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 140,
-        uri: `open.spotify.com/album/3pna4izltUzZe477nEKBxx`,
-        notes: `Atmospheric freeform 140 & deep bass album.`,
-        featured: true,
-        rankBadge: `NMF #316 LP`
-      },
-      {
-        id: `nmf316-hucci-windowoftime`,
-        artist: `Hucci`,
-        title: `Window of Time`,
-        label: `Independent / NMF #316`,
-        subgenre: `140 / Deep`,
-        format: `Album`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 140,
-        uri: `open.spotify.com/album/4KZFLsQjSAp5ZWaBQI49SA`,
-        notes: `Sub-bass heavy LP from trap/140 veteran Hucci.`
-      },
-      {
-        id: `nmf316-quackson-ambiguity`,
-        artist: `Quackson`,
-        title: `A Certain Ambiguity`,
-        label: `Independent / NMF #316`,
-        subgenre: `Colorbass`,
-        format: `Album`,
-        date: `2026-11-14`,
-        week: `NMF #316 (11/14)`,
-        source: `r/dubstep NMF #316`,
-        bpm: 148,
-        uri: `open.spotify.com/album/41NfEYKtPZOXraAnYDaEhL`,
-        notes: `Experimental harmonic bass LP.`
-      },
-
-      // r/realdubstep November 2026 Drops
-      {
-        id: `real-pharma-crackoff`,
-        artist: `Pharma`,
-        title: `Crack Off EP (LOCUS044)`,
-        label: `Locus Sound`,
-        subgenre: `140 / Deep`,
-        format: `EP`,
-        date: `2026-11-13`,
-        week: `r/realdubstep Nov`,
-        source: `r/realdubstep Nov Calendar`,
-        bpm: 140,
-        uri: `pharma.bandcamp.com/album/crack-off-locus044`,
-        notes: `Weighty sound-system 140 dubs released today (Nov 13, 2026).`
-      },
-      {
-        id: `real-tectonic-vol2`,
-        artist: `Various Artists`,
-        title: `Tectonic Sound Vol. 2 (TECLP029)`,
-        label: `Tectonic`,
-        subgenre: `140 / Deep`,
-        format: `Album`,
-        date: `2026-11-13`,
-        week: `r/realdubstep Nov`,
-        source: `r/realdubstep Nov Calendar`,
-        bpm: 140,
-        uri: `tectonicrecordings.bandcamp.com/album/tectonic-sound-vol-2`,
-        notes: `Bristol institution Tectonic drops Vol. 2 compilation on Nov 13, 2026.`
-      },
-      {
-        id: `real-duploc-014`,
-        artist: `DELOUX, Alyness, JAKELOV, ALEA, IDHS`,
-        title: `VA - DUPLOC//014`,
-        label: `DUPLOC`,
-        subgenre: `140 / Deep`,
-        format: `EP`,
-        date: `2026-11-11`,
-        week: `r/realdubstep Nov`,
-        source: `r/realdubstep Nov Calendar`,
-        bpm: 140,
-        uri: `duploc.bandcamp.com/album/duploc-014`,
-        notes: `Five-track deep dubstep showcase on DUPLOC.`
-      },
-      {
-        id: `real-wraz-hyphoglobal`,
-        artist: `Wraz. & Hypho`,
-        title: `Global LP`,
-        label: `Deep, Dark & Dangerous`,
-        subgenre: `140 / Deep`,
-        format: `Album`,
-        date: `2026-11-06`,
-        week: `r/realdubstep Nov`,
-        source: `r/realdubstep & NMF #315`,
-        bpm: 140,
-        uri: `deepdarkdangerous.bandcamp.com/album/global`,
-        notes: `Cross-Atlantic 140 LP on Truth's Deep, Dark & Dangerous imprint.`,
-        featured: true,
-        rankBadge: `DDD // NOV LP`
-      },
-      {
-        id: `real-diebythesword-vantablack`,
-        artist: `Die By The Sword`,
-        title: `Vantablack LP (BDMN018)`,
-        label: `Badman Studios`,
-        subgenre: `140 / Deep`,
-        format: `Album`,
-        date: `2026-11-06`,
-        week: `r/realdubstep Nov`,
-        source: `r/realdubstep Nov Calendar`,
-        bpm: 140,
-        uri: `soundcloud.com/badmanstudios/die-by-the-sword-vantablack-lp-bdmn018-showreel`,
-        notes: `Dark minimal system weight on Badman Studios.`
-      },
-      {
-        id: `real-cadik-proof`,
-        artist: `Cadik`,
-        title: `Proof EP (WPR092 — Pre-Order)`,
-        label: `White Peach`,
-        subgenre: `140 / Deep`,
-        format: `EP`,
-        date: `2026-11-20`,
-        week: `r/realdubstep Nov`,
-        source: `r/realdubstep Upcoming`,
-        bpm: 140,
-        uri: `whitepeach.bandcamp.com/album/wpr092-proof`,
-        notes: `Upcoming Nov 20 White Peach vinyl/digital drop.`
-      },
-      {
-        id: `real-introspekt-mutant`,
-        artist: `Introspekt`,
-        title: `Mutant Transmissions EP (TEMPA135)`,
-        label: `Tempa`,
-        subgenre: `140 / Deep`,
-        format: `EP`,
-        date: `2026-11-20`,
-        week: `r/realdubstep Nov`,
-        source: `r/realdubstep Upcoming`,
-        bpm: 138,
-        uri: `sageintrospekt.bandcamp.com/album/mutant-transmissions-ep`,
-        notes: `Forthcoming Nov 20 on historic Croydon label Tempa.`
-      },
-
-      // NMF #315 (Nov 7, 2026)
-      {
-        id: `nmf315-drdonk-zaagstep`,
-        artist: `Dr Donk, MUST DIE!, Code: Pandorum, Ricky West & More`,
-        title: `ZAAGSTEP`,
-        label: `Disciple`,
-        subgenre: `Tearout`,
-        format: `Album`,
-        date: `2026-11-07`,
-        week: `NMF #315 (11/07)`,
-        source: `BeatTracker #1 Release / NMF #315`,
-        bpm: 155,
-        uri: `open.spotify.com/album/2kxqoTlptNE2OJ5uk4TDmT`,
-        notes: `#1 Overall Top Release in Dubstep on BeatTracker; 14-artist Disciple assault.`,
-        featured: true,
-        rankBadge: `#1 BEATTRACKER`
-      },
-      {
-        id: `nmf315-gwn-wobblegame`,
-        artist: `Ganja White Night`,
-        title: `Wobble Game`,
-        label: `Label Engine`,
-        subgenre: `140 / Deep`,
-        format: `Album`,
-        date: `2026-11-07`,
-        week: `NMF #315 (11/07)`,
-        source: `BeatTracker #3 Release / NMF #315`,
-        bpm: 140,
-        uri: `open.spotify.com/album/4g8y1iXlwC1A2342UmHA8K`,
-        notes: `#3 Top Release in Dubstep; signature Belgian wobble bass.`,
-        featured: true,
-        rankBadge: `#3 TOP RELEASE`
-      },
-      {
-        id: `nmf315-slander-giveyoulove`,
-        artist: `SLANDER, Excision & Blanke`,
-        title: `Give You Love`,
-        label: `Independent / NMF #315`,
-        subgenre: `Melodic`,
-        format: `Single`,
-        date: `2026-11-07`,
-        week: `NMF #315 (11/07)`,
-        source: `r/dubstep NMF #315`,
-        bpm: 144,
-        uri: `open.spotify.com/track/6Bv6ovdcP1uCEJjnF9qvBg`,
-        notes: `Mainstage melodic bass mega-collab.`
-      },
-      {
-        id: `nmf315-diontimmer-mindcontrol`,
-        artist: `Dion Timmer & Smoakland`,
-        title: `Mind Control`,
-        label: `Independent / NMF #315`,
-        subgenre: `Brostep`,
-        format: `Single`,
-        date: `2026-11-07`,
-        week: `NMF #315 (11/07)`,
-        source: `r/dubstep NMF #315`,
-        bpm: 148,
-        uri: `open.spotify.com/track/0kTMAwGGIgxLwIaaxDHQ9D`,
-        notes: `High-energy crunchy brostep banger.`
-      },
-      {
-        id: `nmf315-perrywayne-notomorrow`,
-        artist: `Perry Wayne`,
-        title: `There Is No Tomorrow`,
-        label: `Independent / NMF #315`,
-        subgenre: `Tearout`,
-        format: `Single`,
-        date: `2026-11-07`,
-        week: `NMF #315 (11/07)`,
-        source: `r/dubstep NMF #315`,
-        bpm: 150,
-        uri: `open.spotify.com/track/4QIY2LqrxCT1tst4CJ2jUR`,
-        notes: `Aggressive metallic tearout lead.`
-      },
-      {
-        id: `nmf315-kroww-lastmech`,
-        artist: `KROWW`,
-        title: `THE LAST MECH`,
-        label: `Independent / NMF #315`,
-        subgenre: `Tearout`,
-        format: `Single`,
-        date: `2026-11-07`,
-        week: `NMF #315 (11/07)`,
-        source: `r/dubstep NMF #315`,
-        bpm: 150,
-        uri: `open.spotify.com/track/3MjioC8KIfIfZkJeq4BGdX`,
-        notes: `Cinematic mech-inspired tearout sound design.`
-      },
-
-      // NMF #314 (Oct 31, 2026) & NMF #313 (Oct 24, 2026)
-      {
-        id: `nmf314-spacelaces-kaboom`,
-        artist: `Space Laces`,
-        title: `KABOOM`,
-        label: `Independent / NMF #314`,
-        subgenre: `Brostep`,
-        format: `Single`,
-        date: `2026-10-31`,
-        week: `NMF #314 (10/31)`,
-        source: `r/dubstep NMF #314`,
-        bpm: 150,
-        uri: `open.spotify.com/track/1XLg0001nICNHoJiTvqzQd`,
-        notes: `Precision-engineered Halloween brostep weapon.`
-      },
-      {
-        id: `nmf314-crankdat-withme`,
-        artist: `John Summit & Julia Wolf (Crankdat Remix)`,
-        title: `WITH ME`,
-        label: `Experts Only`,
-        subgenre: `Melodic`,
-        format: `Single`,
-        date: `2026-10-31`,
-        week: `NMF #314 (10/31)`,
-        source: `BeatTracker #2 Track / NMF #314`,
-        bpm: 145,
-        uri: `open.spotify.com/track/0CNeSfSqaXGDkTKOG8soRk`,
-        notes: `#2 Top Track in Dubstep on BeatTracker.`
-      },
-      {
-        id: `nmf314-sanzu-killerinstinct`,
-        artist: `Sanzu & FIELDZ`,
-        title: `KILLER INSTINCT`,
-        label: `Independent / NMF #314`,
-        subgenre: `Riddim`,
-        format: `Single`,
-        date: `2026-10-31`,
-        week: `NMF #314 (10/31)`,
-        source: `r/dubstep NMF #314`,
-        bpm: 140,
-        uri: `open.spotify.com/track/693kQHO86xig47KbtT7wR5`,
-        notes: `Trench/riddim double-drop staple.`
-      },
-      {
-        id: `nmf314-mythm-hostile`,
-        artist: `MYTHM`,
-        title: `Hostile`,
-        label: `Independent / NMF #314`,
-        subgenre: `140 / Deep`,
-        format: `Single`,
-        date: `2026-10-31`,
-        week: `NMF #314 (10/31)`,
-        source: `r/dubstep NMF #314`,
-        bpm: 140,
-        uri: `open.spotify.com/track/4aHYTh7HpfQiaeCjfV8KHi`,
-        notes: `Dark brooding 140 bassline.`
-      },
-      {
-        id: `nmf313-chime-ps1dub`,
-        artist: `Chime`,
-        title: `PS1 Dub / Restraint`,
-        label: `Independent / NMF #313`,
-        subgenre: `Colorbass`,
-        format: `Single`,
-        date: `2026-10-24`,
-        week: `NMF #313 (10/24)`,
-        source: `r/dubstep NMF #313`,
-        bpm: 144,
-        uri: `open.spotify.com/track/7JjnTot2dujFPmGmFkeVas`,
-        notes: `Nostalgic PS1-inspired spectral colorbass.`
-      },
-      {
-        id: `nmf313-sevenlions-grantuseyes`,
-        artist: `Seven Lions, Kill The Noise & MUST DIE!`,
-        title: `Grant Us Eyes`,
-        label: `Independent / NMF #313`,
-        subgenre: `Melodic`,
-        format: `Single`,
-        date: `2026-10-24`,
-        week: `NMF #313 (10/24)`,
-        source: `r/dubstep NMF #313`,
-        bpm: 140,
-        uri: `open.spotify.com/track/1KL06VnkWWY5Ut4qKcU0qd`,
-        notes: `Melodic psy-dubstep and heavy bass crossover.`
-      },
-
-      // BeatTracker Top Tracks & NMF #310-312 & SoundCloud
-      {
-        id: `bt-ydg-throwsummo`,
-        artist: `YDG & Flozone (feat. CREG, Karra)`,
-        title: `Throw Sum Mo'`,
-        label: `Create Music Group`,
-        subgenre: `Brostep`,
-        format: `Single`,
-        date: `2026-11-12`,
-        week: `BeatTracker / SC`,
-        source: `BeatTracker #1 Track`,
-        bpm: 148,
-        uri: `beattracker.com/categories/dubstep/18`,
-        notes: `#1 Overall Top Track in Dubstep on Beatport & Spotify.`
-      },
-      {
-        id: `bt-hurtbox-pressure`,
-        artist: `HURTBOX`,
-        title: `PRESSURE`,
-        label: `Create Music Group`,
-        subgenre: `Riddim`,
-        format: `Single`,
-        date: `2026-10-16`,
-        week: `NMF #310–312`,
-        source: `BeatTracker #4 Track / NMF #312`,
-        bpm: 140,
-        uri: `open.spotify.com/track/2riwfGhDGItxenftMpMYBT`,
-        notes: `#4 Top Track in Dubstep on BeatTracker.`
-      },
-      {
-        id: `bt-hol-shelistenstoriddim`,
-        artist: `HOL! (feat. IANROCKS)`,
-        title: `SHE LISTENS TO RIDDIM`,
-        label: `Create Music Group`,
-        subgenre: `Riddim`,
-        format: `Single`,
-        date: `2026-10-09`,
-        week: `NMF #310–312`,
-        source: `BeatTracker #5 Track / NMF #311`,
-        bpm: 140,
-        uri: `open.spotify.com/track/1XvfDsyFAQ6JSs8TXqUgDT`,
-        notes: `#5 Top Track in Dubstep on BeatTracker.`
-      },
-      {
-        id: `bt-excision-truekillers`,
-        artist: `Excision & Space Laces`,
-        title: `True Killers`,
-        label: `Never Say Die Records`,
-        subgenre: `Brostep`,
-        format: `Single`,
-        date: `2026-10-03`,
-        week: `NMF #310–312`,
-        source: `BeatTracker #9 Track / NMF #310`,
-        bpm: 150,
-        uri: `open.spotify.com/track/1AWhg4oDF4SIERk3KKoZCq`,
-        notes: `#9 Top Track on BeatTracker; Never Say Die Records.`
-      },
-      {
-        id: `bt-tapeb-ghosts`,
-        artist: `Tape B, Zaytoven, Effin & Dani King`,
-        title: `Ghosts in the Static`,
-        label: `Create Music Group`,
-        subgenre: `140 / Deep`,
-        format: `Album`,
-        date: `2026-10-03`,
-        week: `NMF #310–312`,
-        source: `BeatTracker #6 Release / NMF #310`,
-        bpm: 140,
-        uri: `open.spotify.com/album/2ohC4XrHClJHBY9ayNjLpW`,
-        notes: `#6 Top Release on BeatTracker; hip-hop fused 140 bass.`
-      },
-      {
-        id: `sc-subtronics-birdphone`,
-        artist: `Subtronics`,
-        title: `Bird Phone`,
-        label: `Cyclops Recordings`,
-        subgenre: `Brostep`,
-        format: `Single`,
-        date: `2026-08-15`,
-        week: `BeatTracker / SC`,
-        source: `SoundCloud / NMF #303`,
-        bpm: 150,
-        uri: `soundcloud.com/subtronics`,
-        notes: `Published Aug 12, 2026 on SoundCloud; featured in NMF #303.`,
-        featured: true,
-        rankBadge: `SC PREMIERE`
-      }
+    // Track Catalog compiled strictly from provided sources (120 verified releases)
+    const RAW_TRACKS = [
+      { id: 1, title: `FYL`, artist: `Calcium`, date: `2026-11-14`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6cpSalprVCVWeVnm1tpbDy`, hype: 92, review: 88, chart: 24 },
+      { id: 2, title: `Bounce FM`, artist: `Moody Good & Dr. Ushūu`, date: `2026-11-14`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3TCkKDvs4C2ZFhZ9bu6b5K`, hype: 95, review: 96, chart: 19 },
+      { id: 3, title: `Wobble Stomper`, artist: `Dirt Monkey & Zouth`, date: `2026-11-14`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3aY5Tee3T93RV8WVlPAIfS`, hype: 89, review: 86, chart: 31 },
+      { id: 4, title: `Morning Somber`, artist: `INSIDIUS`, date: `2026-11-14`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `05fcj0dLbtqP9CfG0L4qbf`, hype: 83, review: 82, chart: 48 },
+      { id: 5, title: `Jump Up`, artist: `Blosso & Tasuuna`, date: `2026-11-14`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `2u165JrBorpYxryaj8vTrb`, hype: 81, review: 80, chart: 53 },
+      { id: 6, title: `Spooky Whistle`, artist: `Hairitage`, date: `2026-11-14`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4KvNQ6qHelGMVAaTP22P38`, hype: 87, review: 84, chart: 35 },
+      { id: 7, title: `ACCESS DENIED`, artist: `Monxx`, date: `2026-11-14`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0M01PG3YPyjceDYyRIcRYx`, hype: 88, review: 83, chart: 33 },
+      { id: 8, title: `Halloweentown`, artist: `Ipsiom`, date: `2026-11-14`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `5mjnNjEKDIgv6gJGCozuEL`, hype: 79, review: 85, chart: 58 },
+      { id: 9, title: `H.I.M.`, artist: `HIGHSOCIETY & Trippz Michaud`, date: `2026-11-14`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0cS1M0GcQqWBa2uB21wgFR`, hype: 84, review: 81, chart: 44 },
+      { id: 10, title: `Higher`, artist: `Hydraulix & SubDocta`, date: `2026-11-14`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6JYyglUOoup8V1Nyzq2URt`, hype: 91, review: 89, chart: 22 },
+      { id: 11, title: `Escapism Vol. II (LP)`, artist: `Levity`, date: `2026-11-14`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4aqUvBOO4ieaXIuXDrvAW2`, spotifyType: `album`, hype: 94, review: 92, chart: 15 },
+      { id: 12, title: `SANCTUARY (LP)`, artist: `Ravenscoon`, date: `2026-11-14`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3pna4izltUzZe477nEKBxx`, spotifyType: `album`, hype: 93, review: 94, chart: 16 },
+      { id: 13, title: `FuntCase Presents: DPMO, Vol.5`, artist: `FuntCase, TRVCY, MVRDA, Versa & more`, date: `2026-11-14`, genre: `Riddim`, sources: [`BeatTracker`, `Beatport`, `r/dubstep NMF`, `Spotify`], spotifyId: `0hpMwA7HQezUjONwi7Cy84`, spotifyType: `album`, hype: 97, review: 91, chart: 2 },
+      { id: 14, title: `Window of Time (LP)`, artist: `Hucci`, date: `2026-11-14`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4KZFLsQjSAp5ZWaBQI49SA`, spotifyType: `album`, hype: 90, review: 93, chart: 28 },
+      { id: 15, title: `W1000`, artist: `Tohji & Skrillex & Mechatok`, date: `2026-11-14`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4iTB4pj1Q0IAJ0kjiOyaXU`, hype: 96, review: 91, chart: 13 },
+      { id: 16, title: `Dune`, artist: `Ace Aura`, date: `2026-11-14`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0z2ndYYpza0Adnq1J2B53J`, hype: 89, review: 92, chart: 29 },
+      { id: 17, title: `STUCK IN LIMBO (EP)`, artist: `PYKE`, date: `2026-11-14`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `2qrdVts9yJ0FLX4Jl35tp5`, spotifyType: `album`, hype: 85, review: 84, chart: 42 },
+      { id: 18, title: `Null State`, artist: `Severe`, date: `2026-11-14`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4QTPF0QAWmgLrbfhg5vxQa`, hype: 78, review: 80, chart: 62 },
+      { id: 19, title: `Azadi EP`, artist: `Charlotte de Witte & NAVA`, date: `2026-11-13`, genre: `140 / Deep`, sources: [`We Rave You`, `Spotify`], hype: 88, review: 91, chart: 26 },
+      { id: 20, title: `When Will We`, artist: `DE-TU`, date: `2026-11-12`, genre: `140 / Deep`, sources: [`r/realdubstep`], hype: 82, review: 93, chart: 64 },
+      { id: 21, title: `Mayhem`, artist: `AD & AKIRAH`, date: `2026-11-08`, genre: `Riddim`, sources: [`BeatTracker`, `Beatport`], hype: 91, review: 87, chart: 6 },
+      { id: 22, title: `Give You Love`, artist: `SLANDER & Excision & Blanke`, date: `2026-11-07`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6Bv6ovdcP1uCEJjnF9qvBg`, hype: 98, review: 90, chart: 11 },
+      { id: 23, title: `ZAAGSTEP`, artist: `Dr Donk, MUST DIE!, Code: Pandorum & more`, date: `2026-11-07`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`, `r/dubstep NMF`, `Spotify`], spotifyId: `2kxqoTlptNE2OJ5uk4TDmT`, spotifyType: `album`, hype: 99, review: 93, chart: 1 },
+      { id: 24, title: `Wobble Game`, artist: `Ganja White Night`, date: `2026-11-07`, genre: `140 / Deep`, sources: [`BeatTracker`, `Beatport`, `r/dubstep NMF`, `Spotify`], spotifyId: `4g8y1iXlwC1A2342UmHA8K`, spotifyType: `album`, hype: 97, review: 95, chart: 3 },
+      { id: 25, title: `Global (LP)`, artist: `Wraz. & Hypho`, date: `2026-11-07`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `48vlsgaF4UowpCnADcikr0`, spotifyType: `album`, hype: 88, review: 94, chart: 36 },
+      { id: 26, title: `Mind Control`, artist: `Dion Timmer & Smoakland`, date: `2026-11-07`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0kTMAwGGIgxLwIaaxDHQ9D`, hype: 87, review: 85, chart: 34 },
+      { id: 27, title: `There Is No Tomorrow`, artist: `Perry Wayne`, date: `2026-11-07`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4QIY2LqrxCT1tst4CJ2jUR`, hype: 86, review: 83, chart: 39 },
+      { id: 28, title: `Rabbit Hole`, artist: `Dr. Ozi`, date: `2026-11-07`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `5gA6okISDntJXPqTkksONl`, hype: 85, review: 84, chart: 45 },
+      { id: 29, title: `Hands All Over Me`, artist: `Whales`, date: `2026-11-07`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `2ILdXZofeN6MBqZzovHkC1`, hype: 84, review: 86, chart: 43 },
+      { id: 30, title: `energy vampire`, artist: `Knoir`, date: `2026-11-07`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `5ST4Kl16yaQZpfWQDu55uY`, hype: 82, review: 87, chart: 51 },
+      { id: 31, title: `Deep End VIP`, artist: `Star Monster`, date: `2026-11-07`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3quyMvoyIbxNEi3WfN39iE`, hype: 80, review: 85, chart: 55 },
+      { id: 32, title: `Glass Box`, artist: `Jaenga`, date: `2026-11-07`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3pqTNVJqIxTDLWm5R1441A`, spotifyType: `album`, hype: 83, review: 88, chart: 47 },
+      { id: 33, title: `SMILE! :D plus+`, artist: `Porter Robinson`, date: `2026-11-07`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7aPEoTeFJSI5TrMqlPRmUK`, spotifyType: `album`, hype: 92, review: 93, chart: 18 },
+      { id: 34, title: `Throw Sum Mo' (feat. CREG, Karra)`, artist: `YDG & Flozone`, date: `2026-11-06`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`, `Spotify`], hype: 96, review: 89, chart: 1 },
+      { id: 35, title: `BassQuest Vol. 3`, artist: `Ahee`, date: `2026-11-02`, genre: `140 / Deep`, sources: [`BeatTracker`, `Beatport`], hype: 89, review: 90, chart: 9 },
+      { id: 36, title: `ORIGIN // (Extended Mixes)`, artist: `Kaskade, Wooli & Crankdat`, date: `2026-11-01`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`], hype: 94, review: 88, chart: 4 },
+      { id: 37, title: `Soundman VIP`, artist: `V.I.V.E.K`, date: `2026-11-01`, genre: `140 / Deep`, sources: [`r/realdubstep`], hype: 81, review: 95, chart: 69 },
+      { id: 38, title: `Lean Forward`, artist: `Mala`, date: `2026-11-01`, genre: `140 / Deep`, sources: [`r/realdubstep`], hype: 84, review: 97, chart: 66 },
+      { id: 39, title: `KABOOM`, artist: `Space Laces`, date: `2026-10-31`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1XLg0001nICNHoJiTvqzQd`, hype: 96, review: 94, chart: 12 },
+      { id: 40, title: `WITH ME`, artist: `John Summit & Julia Wolf`, date: `2026-10-31`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`], hype: 95, review: 87, chart: 2 },
+      { id: 41, title: `WITH ME (Crankdat Remix)`, artist: `John Summit & Julia Wolf (Crankdat)`, date: `2026-10-31`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0CNeSfSqaXGDkTKOG8soRk`, hype: 93, review: 88, chart: 14 },
+      { id: 42, title: `WILD WEST`, artist: `Emorfik & Usaybflow`, date: `2026-10-31`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `45vgxNn7jKqPBK5yn9gS9O`, hype: 88, review: 84, chart: 32 },
+      { id: 43, title: `Hardcore Energy`, artist: `G Jones & Ashelyy`, date: `2026-10-31`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6hPKUQEkGCm4Wr09rFC6VK`, hype: 92, review: 96, chart: 21 },
+      { id: 44, title: `Hostile`, artist: `MYTHM`, date: `2026-10-31`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4aHYTh7HpfQiaeCjfV8KHi`, hype: 85, review: 90, chart: 49 },
+      { id: 45, title: `HOW TO RAISE THE DEAD (EP)`, artist: `Avance`, date: `2026-10-31`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `475RrWJzy50ft4s3u5mLwx`, spotifyType: `album`, hype: 84, review: 86, chart: 52 },
+      { id: 46, title: `FROM DARKNESS, COMES LIGHT`, artist: `Deathpact`, date: `2026-10-31`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1flBDeacpSmZAzOWushfht`, spotifyType: `album`, hype: 93, review: 92, chart: 17 },
+      { id: 47, title: `Big Bad Sound (EP)`, artist: `Hypho`, date: `2026-10-31`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `5eyFwGtLPOsRoJ65E51EKk`, spotifyType: `album`, hype: 83, review: 91, chart: 54 },
+      { id: 48, title: `2019 (EP)`, artist: `1788-L`, date: `2026-10-31`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4PBmDcujEo6LhVzLeA49Th`, spotifyType: `album`, hype: 87, review: 88, chart: 38 },
+      { id: 49, title: `KILLER INSTINCT`, artist: `Sanzu & FIELDZ`, date: `2026-10-31`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `693kQHO86xig47KbtT7wR5`, hype: 82, review: 81, chart: 59 },
+      { id: 50, title: `DATA MOSHPIT`, artist: `Lord Genmu & Shadient`, date: `2026-10-31`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6TMXAtVc5lXbPtxJB8tZxt`, hype: 81, review: 84, chart: 61 },
+      { id: 51, title: `LOSE CONTROL`, artist: `Chassi`, date: `2026-10-31`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `5kCpuNzKdhXFaxz9b5aP9e`, hype: 80, review: 82, chart: 63 },
+      { id: 52, title: `Soma`, artist: `Skrillex & Nitepunk`, date: `2026-10-28`, genre: `Brostep`, sources: [`BeatTracker`, `Spotify`], hype: 97, review: 94, chart: 7 },
+      { id: 53, title: `Nostalgia`, artist: `Mersiv & Seth David`, date: `2026-10-25`, genre: `140 / Deep`, sources: [`BeatTracker`, `Spotify`], hype: 91, review: 89, chart: 10 },
+      { id: 54, title: `Inside Out`, artist: `Oliverse & P Money & Shayan`, date: `2026-10-24`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1dPcEm6TROs3PEJxOUXnzX`, hype: 88, review: 89, chart: 30 },
+      { id: 55, title: `Grant Us Eyes`, artist: `Seven Lions & Kill The Noise & MUST DIE!`, date: `2026-10-24`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1KL06VnkWWY5Ut4qKcU0qd`, hype: 95, review: 91, chart: 20 },
+      { id: 56, title: `PS1 Dub`, artist: `Chime`, date: `2026-10-24`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7JjnTot2dujFPmGmFkeVas`, hype: 89, review: 92, chart: 37 },
+      { id: 57, title: `Restraint`, artist: `Chime`, date: `2026-10-24`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4F5oqsmrialS3M2P5FpOqA`, hype: 86, review: 90, chart: 46 },
+      { id: 58, title: `Goblin Mode`, artist: `Stylust & Wraz.`, date: `2026-10-24`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6N4I2q93qUaBOMEVSNfzpD`, hype: 84, review: 88, chart: 50 },
+      { id: 59, title: `ECHOES`, artist: `Ravenscoon & Hex Cougar`, date: `2026-10-24`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7AlemQMHpofDh4RPlWGada`, hype: 89, review: 89, chart: 40 },
+      { id: 60, title: `Hit Em`, artist: `Bear Grillz`, date: `2026-10-24`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6WNKmAnMefTIFtaGHeu7Qf`, hype: 83, review: 80, chart: 56 },
+      { id: 61, title: `Ultramarine`, artist: `Midnight Tyrannosaurus`, date: `2026-10-24`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1HuPzESXQJqTBNWRO5wEHy`, hype: 86, review: 84, chart: 41 },
+      { id: 62, title: `Energy (PEEKABOO Remix)`, artist: `Flava D & Stush (PEEKABOO)`, date: `2026-10-24`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0D1uyYeKDR7sFgv9nulT3y`, hype: 90, review: 91, chart: 27 },
+      { id: 63, title: `Fluxiverse Vol.3 (EP)`, artist: `Flux Pavilion`, date: `2026-10-24`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `5ItWWaavtMgb08YacFWpAM`, spotifyType: `album`, hype: 91, review: 89, chart: 23 },
+      { id: 64, title: `ORGANIC DUBSTEP EP [Remixes]`, artist: `INFEKT`, date: `2026-10-24`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3d5Zof0lxl3yGrDr890FJK`, spotifyType: `album`, hype: 89, review: 90, chart: 25 },
+      { id: 65, title: `Mala at RADAR | Dekmantel Festival`, artist: `Mala`, date: `2026-10-21`, genre: `140 / Deep`, sources: [`r/realdubstep`, `YouTube`], hype: 91, review: 98, chart: 67 },
+      { id: 66, title: `Bass Cannon`, artist: `Flux Pavilion & Crankdat`, date: `2026-10-20`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`], hype: 94, review: 88, chart: 7 },
+      { id: 67, title: `Roll with the Punches`, artist: `Peverelist`, date: `2026-10-20`, genre: `140 / Deep`, sources: [`r/realdubstep`], hype: 87, review: 96, chart: 72 },
+      { id: 68, title: `PRESSURE`, artist: `HURTBOX`, date: `2026-10-16`, genre: `Riddim`, sources: [`BeatTracker`, `Beatport`, `r/dubstep NMF`, `Spotify`], spotifyId: `2riwfGhDGItxenftMpMYBT`, hype: 95, review: 89, chart: 4 },
+      { id: 69, title: `The Power`, artist: `Flux Pavilion & SampliFire`, date: `2026-10-16`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1r3sNBYXzEZ6TVzg2RnzXH`, hype: 92, review: 88, chart: 30 },
+      { id: 70, title: `Wobble Chef`, artist: `Ganja White Night`, date: `2026-10-16`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `2xrHfbYWP4oFYAdD5J30qh`, hype: 93, review: 91, chart: 25 },
+      { id: 71, title: `PACK-A-PUNCH`, artist: `MVRDA`, date: `2026-10-16`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0G7wcHJcadJDWwtcArJcOb`, hype: 86, review: 84, chart: 57 },
+      { id: 72, title: `Genre Snob`, artist: `Dirt Monkey`, date: `2026-10-16`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7JDnLEppNt2ESBZhT7pB5u`, hype: 84, review: 85, chart: 60 },
+      { id: 73, title: `Shoota`, artist: `Riot Ten, Lit Lords, Bailo & SAYMYNAME`, date: `2026-10-16`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0LIEsllEDNyOu9hFfUJFbe`, hype: 85, review: 80, chart: 65 },
+      { id: 74, title: `Magic`, artist: `Grabbitz`, date: `2026-10-16`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3sNTAn4w6yc5NPLuZ1elRf`, hype: 86, review: 88, chart: 68 },
+      { id: 75, title: `Is It A Banger?`, artist: `Stylust & Shlump`, date: `2026-10-16`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7G9fmyEPRCaOMSNcyIianG`, hype: 83, review: 87, chart: 70 },
+      { id: 76, title: `SHE LISTENS TO RIDDIM (feat. IANROCKS)`, artist: `HOL!`, date: `2026-10-09`, genre: `Riddim`, sources: [`BeatTracker`, `Beatport`, `r/dubstep NMF`, `Spotify`], spotifyId: `1XvfDsyFAQ6JSs8TXqUgDT`, hype: 96, review: 90, chart: 5 },
+      { id: 77, title: `Build Me Up`, artist: `Zomboy`, date: `2026-10-09`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `56YhQOAF0X8Ch4qT3blnZP`, hype: 93, review: 89, chart: 31 },
+      { id: 78, title: `Insanity`, artist: `Virtual Riot & Whales`, date: `2026-10-09`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3du1ULb91ZeCuAnEet30Z0`, hype: 94, review: 92, chart: 28 },
+      { id: 79, title: `EARTHQUAKE`, artist: `Kai Wachi`, date: `2026-10-09`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0bGprkG9dD29L6fexeP0wH`, hype: 90, review: 85, chart: 38 },
+      { id: 80, title: `Life Or Death`, artist: `Sharks`, date: `2026-10-09`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6d3mfVuyYmBa5Hemitv7Mr`, hype: 87, review: 91, chart: 71 },
+      { id: 81, title: `Heart & Soul`, artist: `Hamdi & D Double E`, date: `2026-10-09`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6B92qqLTgnAZBo46AuDkM8`, hype: 92, review: 95, chart: 35 },
+      { id: 82, title: `One More Tune`, artist: `Chef Boyarbeatz`, date: `2026-10-09`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1HiB0ZGlQinZP2pk5gTdOc`, hype: 85, review: 91, chart: 74 },
+      { id: 83, title: `Heartbeats (LP)`, artist: `Effin`, date: `2026-10-09`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `14NtoX2L7v9aGf8sghFA8d`, spotifyType: `album`, hype: 89, review: 92, chart: 44 },
+      { id: 84, title: `HARDCORE DIVA (EP)`, artist: `ISOxo`, date: `2026-10-09`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `2Fin9olY1bjzCciF2KccCr`, spotifyType: `album`, hype: 94, review: 90, chart: 33 },
+      { id: 85, title: `True Killers`, artist: `Excision & Space Laces`, date: `2026-10-03`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`, `r/dubstep NMF`, `Spotify`], spotifyId: `1AWhg4oDF4SIERk3KKoZCq`, hype: 98, review: 93, chart: 9 },
+      { id: 86, title: `DON'T BELIEVE IT`, artist: `John Summit & Absolutely`, date: `2026-10-03`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`], hype: 95, review: 87, chart: 3 },
+      { id: 87, title: `DON'T BELIEVE IT (GRiZ Remix)`, artist: `John Summit & Absolutely (GRiZ)`, date: `2026-10-03`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `4Xw0xSHDXAkilxAt2X9hIZ`, hype: 92, review: 90, chart: 40 },
+      { id: 88, title: `Ghosts in the Static`, artist: `Tape B & Zaytoven`, date: `2026-10-03`, genre: `140 / Deep`, sources: [`BeatTracker`, `r/dubstep NMF`, `Spotify`], spotifyId: `2ohC4XrHClJHBY9ayNjLpW`, spotifyType: `album`, hype: 95, review: 93, chart: 6 },
+      { id: 89, title: `DIS FUNCTION`, artist: `ATLiens & Cyclops`, date: `2026-10-03`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6tGqADF1MUkCEwHbY6EKCr`, hype: 88, review: 86, chart: 73 },
+      { id: 90, title: `Lose Your Mind`, artist: `Liquid Stranger, TVBOO & Al Kapone`, date: `2026-10-03`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0hXpggThaee9t6XQdD2sng`, hype: 89, review: 88, chart: 75 },
+      { id: 91, title: `RESCUE U`, artist: `Alison Wonderland & WINK`, date: `2026-10-03`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3jDXVV12qJ0sZB3Ixp3srB`, hype: 90, review: 87, chart: 76 },
+      { id: 92, title: `Booster Ignition`, artist: `SLANDER & Nejvex`, date: `2026-09-25`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0ZsjHpMAheGfZCfn4eLhQU`, hype: 87, review: 84, chart: 77 },
+      { id: 93, title: `Matrix`, artist: `Black Tiger Sex Machine & EDDIE`, date: `2026-09-25`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1wYgYBJvA13mMVHpYesTAt`, hype: 88, review: 86, chart: 78 },
+      { id: 94, title: `What's the motive?`, artist: `EAZYBAKED & Distinct Motive`, date: `2026-09-25`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `22aHWsMOhsvWjIIUfT5gEj`, hype: 89, review: 93, chart: 79 },
+      { id: 95, title: `Fight Back Sound`, artist: `Caspa & The Widdler`, date: `2026-09-25`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `2Y68itGMn8pcyWOlmsoRH4`, hype: 91, review: 95, chart: 80 },
+      { id: 96, title: `Final Bonk`, artist: `Cyclops & TYNAN`, date: `2026-09-18`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `73NKwK7CHB0GXovxk24aOu`, hype: 86, review: 85, chart: 81 },
+      { id: 97, title: `STATIC`, artist: `Virtual Riot & Tokyo Machine`, date: `2026-09-18`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `3pdFQsczAhnPRiWllBQ3xr`, hype: 92, review: 90, chart: 82 },
+      { id: 98, title: `ROWDY`, artist: `Sullivan King & Ray Volpe`, date: `2026-09-18`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6pXxxyrJFZm81EngAGY29W`, hype: 91, review: 85, chart: 83 },
+      { id: 99, title: `Bury Me Alive`, artist: `LEVEL UP, Kompany & Bertie Scott`, date: `2026-09-18`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7J51uinFoQXmKGyMJC7bEo`, hype: 89, review: 86, chart: 84 },
+      { id: 100, title: `ALL THE TIME`, artist: `John Summit, The Chainsmokers & Ilsey`, date: `2026-09-11`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`], hype: 93, review: 85, chart: 8 },
+      { id: 101, title: `Snakepit Anthem`, artist: `Viperactive`, date: `2026-09-11`, genre: `Brostep`, sources: [`BeatTracker`, `Beatport`, `r/dubstep NMF`], hype: 92, review: 89, chart: 10 },
+      { id: 102, title: `Scary Monsters & Nice Sprites (Remake)`, artist: `PhaseOne`, date: `2026-09-11`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7e2zNm90ULXbzAm1NXfbac`, hype: 90, review: 87, chart: 85 },
+      { id: 103, title: `Essa Ta Quente`, artist: `Chase & Status & Skrillex`, date: `2026-09-11`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `1kLpWLn4PSgKJAQz8X5dl4`, hype: 94, review: 91, chart: 86 },
+      { id: 104, title: `Rockin It`, artist: `DØMINA`, date: `2026-09-06`, genre: `140 / Deep`, sources: [`By The Wavs`], hype: 77, review: 89, chart: 88 },
+      { id: 105, title: `This Feeling`, artist: `Adam Swim`, date: `2026-09-06`, genre: `140 / Deep`, sources: [`By The Wavs`], hype: 76, review: 87, chart: 89 },
+      { id: 106, title: `Emulator`, artist: `Zomboy`, date: `2026-08-28`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `5eJvrxga5144z3fkPveQkr`, hype: 90, review: 88, chart: 87 },
+      { id: 107, title: `I Need`, artist: `Seven Lions & Kill The Noise`, date: `2026-08-28`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7xCNiQp9kNdBjo8SYllMtc`, hype: 91, review: 90, chart: 90 },
+      { id: 108, title: `Sunshine`, artist: `GRiZ`, date: `2026-08-28`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0im0RIk0Wc8vzsTRMPoK7U`, hype: 92, review: 91, chart: 91 },
+      { id: 109, title: `Play With Fire`, artist: `Jkyl & Hyde & SampliFire`, date: `2026-08-28`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `2DKj0J1FaMYe4LRIyk5Sya`, hype: 86, review: 85, chart: 92 },
+      { id: 110, title: `Forest Fire`, artist: `Boogie T`, date: `2026-08-22`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `35CaQqeKDvfNh8MA2wSxpz`, hype: 85, review: 86, chart: 93 },
+      { id: 111, title: `EDGE OF THE WORLD (LP)`, artist: `Blanke`, date: `2026-08-22`, genre: `Color Bass`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `40LNAakQwoFFgvhHfMwMHV`, spotifyType: `album`, hype: 90, review: 91, chart: 94 },
+      { id: 112, title: `STINK MODE`, artist: `LSDREAM & Kill The Noise`, date: `2026-08-15`, genre: `140 / Deep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `35wiXT21VADtYMHavMX7vm`, hype: 88, review: 87, chart: 95 },
+      { id: 113, title: `Final Tick`, artist: `SampliFire & INFEKT & XAE`, date: `2026-08-15`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `7fuosQK0LV2Pd7AR2PhDWk`, hype: 87, review: 89, chart: 96 },
+      { id: 114, title: `Bird Phone`, artist: `Subtronics`, date: `2026-08-12`, genre: `Brostep`, sources: [`SoundCloud`, `r/dubstep NMF`, `Spotify`], spotifyId: `7DxoMYqZk3vWFJZ5rX3H4k`, soundcloudPath: `soundcloud.com/subtronics`, hype: 96, review: 91, chart: 22 },
+      { id: 115, title: `PLANET VOYD (SVDDEN DEATH Remix)`, artist: `Subfiltronik & Bommer`, date: `2026-08-07`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `56lMugeyLfD3BsnzXzNfG0`, hype: 93, review: 92, chart: 97 },
+      { id: 116, title: `Fux With Us (feat. TiaCorine)`, artist: `Crankdat & Wooli`, date: `2026-08-07`, genre: `Brostep`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `0dMhvueZHZdHfJN99uMzcb`, hype: 91, review: 86, chart: 98 },
+      { id: 117, title: `LEVELTRONICS - GIRLFRIEND (FLIP)`, artist: `Subtronics`, date: `2026-08-01`, genre: `Brostep`, sources: [`SoundCloud`], soundcloudPath: `soundcloud.com/subtronics`, hype: 90, review: 88, chart: 99 },
+      { id: 118, title: `Dissent`, artist: `SVDDEN DEATH & yvm3`, date: `2026-07-24`, genre: `Riddim`, sources: [`r/dubstep NMF`, `Spotify`], spotifyId: `6Bl2CCYSmQBfqdQdqWI5Tm`, hype: 92, review: 90, chart: 100 },
+      { id: 119, title: `Fall Back to Nothing (feat. Saint Monet)`, artist: `Subtronics`, date: `2026-06-26`, genre: `Brostep`, sources: [`SoundCloud`], soundcloudPath: `soundcloud.com/subtronics`, hype: 89, review: 89, chart: 101 },
+      { id: 120, title: `Hyper Sun (UKF Dubstep Archive #1)`, artist: `Black Sun Empire`, date: `2009-05-01`, genre: `140 / Deep`, sources: [`UKF`, `YouTube`], hype: 88, review: 97, chart: 102 }
     ];
 
-    const BEATTRACKER_CHARTS = {
-      tracks: [
-        { rank: 1, title: `Throw Sum Mo' (feat. CREG, Karra)`, artists: `YDG, Flozone`, label: `Create Music Group`, subgenre: `Brostep`, trackId: `bt-ydg-throwsummo` },
-        { rank: 2, title: `WITH ME`, artists: `John Summit, Julia Wolf`, label: `Experts Only`, subgenre: `Melodic`, trackId: `nmf314-crankdat-withme` },
-        { rank: 3, title: `DON'T BELIEVE IT`, artists: `Absolutely, John Summit`, label: `Experts Only`, subgenre: `Melodic`, trackId: `nmf314-crankdat-withme` },
-        { rank: 4, title: `PRESSURE`, artists: `HURTBOX`, label: `Create Music Group`, subgenre: `Riddim`, trackId: `bt-hurtbox-pressure` },
-        { rank: 5, title: `SHE LISTENS TO RIDDIM (feat. IANROCKS)`, artists: `HOL!`, label: `Create Music Group`, subgenre: `Riddim`, trackId: `bt-hol-shelistenstoriddim` },
-        { rank: 6, title: `Mayhem`, artists: `AD, AKIRAH`, label: `DPMO`, subgenre: `Riddim`, trackId: `nmf316-dpmo-vol5` },
-        { rank: 7, title: `Soma`, artists: `Skrillex, Nitepunk`, label: `OWSLA / Atlantic`, subgenre: `Brostep`, trackId: `nmf316-calcium-fyl` },
-        { rank: 8, title: `ALL THE TIME`, artists: `The Chainsmokers, Ilsey, John Summit`, label: `Experts Only`, subgenre: `Melodic`, trackId: `nmf315-slander-giveyoulove` },
-        { rank: 9, title: `True Killers`, artists: `Excision, Space Laces`, label: `Never Say Die Records`, subgenre: `Brostep`, trackId: `bt-excision-truekillers` },
-        { rank: 10, title: `Snakepit Anthem`, artists: `Viperactive`, label: `Viperactive`, subgenre: `Brostep`, trackId: `nmf316-moodygood-bouncefm` }
-      ],
-      releases: [
-        { rank: 1, title: `ZAAGSTEP`, artists: `Dr Donk, MUST DIE!, Code: Pandorum, Ricky West & 10+`, label: `Disciple`, subgenre: `Tearout`, trackId: `nmf315-drdonk-zaagstep` },
-        { rank: 2, title: `FuntCase Presents: DPMO, Vol. 5`, artists: `FuntCase, MVRDA, TRVCY, Versa, Aweminus & 19+`, label: `DPMO`, subgenre: `Riddim`, trackId: `nmf316-dpmo-vol5` },
-        { rank: 3, title: `Wobble Game`, artists: `Ganja White Night`, label: `Label Engine`, subgenre: `140 / Deep`, trackId: `nmf315-gwn-wobblegame` },
-        { rank: 4, title: `ORIGIN // (Extended Mixes)`, artists: `Kaskade, Crankdat, Wooli, BUNT.`, label: `Arkade`, subgenre: `Melodic`, trackId: `nmf315-slander-giveyoulove` },
-        { rank: 6, title: `Ghosts in the Static`, artists: `Tape B, Zaytoven, Effin, Dani King`, label: `Create Music Group`, subgenre: `140 / Deep`, trackId: `bt-tapeb-ghosts` },
-        { rank: 7, title: `Bass Cannon`, artists: `Flux Pavilion, Crankdat`, label: `Circus Records`, subgenre: `Brostep`, trackId: `nmf314-spacelaces-kaboom` },
-        { rank: 8, title: `Music is the Medicine`, artists: `Bassnectar, Cocoa Sarai, Blakkamoore`, label: `Amorphous Music`, subgenre: `140 / Deep`, trackId: `nmf316-ravenscoon-sanctuary` },
-        { rank: 9, title: `BassQuest Vol. 3`, artists: `Ahee`, label: `ZOT Records`, subgenre: `140 / Deep`, trackId: `nmf316-dirtmonkey-wobblestomper` },
-        { rank: 10, title: `Nostalgia`, artists: `Mersiv, Seth David, HVDES, Superheaven`, label: `Label Engine`, subgenre: `Melodic`, trackId: `nmf316-levity-escapism2` }
-      ]
-    };
+    let activeTab = `hyped`;
+    let refreshPulseCount = 0;
+    let selectedTrackId = null;
+    let playingTrackId = null;
+    let audioCtx = null;
+    let seqInterval = null;
+    let eqInterval = null;
 
-    const REDDIT_FEEDS = {
-      nmf: [
-        {
-          tag: `NMF #316 • NOV 14, 2026`,
-          title: `New Music Friday (11/14/2026) — "Kinda a thicc week here!"`,
-          meta: `u/Litt_Kiddie (Mod) • 14 votes • 19 comments`,
-          summary: `25 Singles (Calcium, Moody Good & Dr. Ushūu, Monxx, Ipsiom, Severe), 6 EPs (DOIL, Knoir, PYKE), 6 Albums (Levity, Ravenscoon, DPMO Vol. 5, Hucci), plus OTT picks Tohji & Skrillex and Ace Aura.`,
-          path: `reddit.com/r/dubstep/comments/1xva7nf/new_music_friday_11142026/`
-        },
-        {
-          tag: `NMF #315 • NOV 07, 2026`,
-          title: `New Music Friday (11/07/2026) — Heavy Albums Week`,
-          meta: `u/Litt_Kiddie (Mod) • 20 votes • 19 comments`,
-          summary: `Headlined by Dr Donk's ZAAGSTEP, Ganja White Night's Wobble Game, Wraz. & Hypho's Global, SLANDER & Excision & Blanke, plus Porter Robinson OTT.`,
-          path: `reddit.com/r/dubstep/comments/1xpgl8v/new_music_friday_1172026/`
-        },
-        {
-          tag: `NMF #314 • OCT 31, 2026`,
-          title: `New Music Friday (10/31/2026) — Halloween Spooktacular`,
-          meta: `u/Litt_Kiddie (Mod) • 13 votes • 19 comments`,
-          summary: `30 Singles led by Space Laces - KABOOM, G Jones & Ashelyy, Crankdat remix of WITH ME, Sanzu & FIELDZ, plus Avance & Deathpact EPs.`,
-          path: `reddit.com/r/dubstep/comments/1xjid1v/new_music_friday_10312026/`
-        },
-        {
-          tag: `CURATED PLAYLISTS`,
-          title: `r/dubstep Weekly NMF, wubly (u/BahaMan69) & Hypers (u/Litt_Kiddie)`,
-          meta: `Updated every Friday`,
-          summary: `Official community Spotify syncs alongside hand-curated deep wubs (wubly) and high-octane festival bangers (Hypers).`,
-          path: `open.spotify.com/playlist/18ePsc36VbfsskyTBHpGZN`
-        }
-      ],
-      real: [
-        {
-          tag: `NOV 13, 2026 • TODAY`,
-          title: `Pharma - Crack Off EP (LOCUS044) & VA - Tectonic Sound Vol. 2`,
-          meta: `u/winry • Dubstep Releases: November, 2026`,
-          summary: `Twin 140 system drops landing today on Locus Sound and Bristol's Tectonic Recordings.`,
-          path: `reddit.com/r/realdubstep/comments/1xoyupe/dubstep_releases_november_2026/`
-        },
-        {
-          tag: `NOV 20–27 • UPCOMING`,
-          title: `White Peach (Cadik), Artikal (J:Kenzo), Tempa (Introspekt), Wheel & Deal (Wolf'd)`,
-          meta: `November 2026 Schedule`,
-          summary: `Forthcoming late-November vinyl/Bandcamp slate including Bukez Finezt - Favorite Flavorz and Cartridge - Storm.`,
-          path: `sageintrospekt.bandcamp.com/album/mutant-transmissions-ep`
-        },
-        {
-          tag: `HERITAGE & LIVE SETS`,
-          title: `Skream! 20 Years On | The Listening Room & Best Live Sets 2026`,
-          meta: `62 votes • r/realdubstep top discussion`,
-          summary: `Community highlights: Mala at RADAR Dekmantel 2026, NUMA CREW @ Infrasound 2026 (140 Set), Coki Keep Hush Brussels, and Slaughtermob (2007).`,
-          path: `reddit.com/r/realdubstep/`
-        },
-        {
-          tag: `RADIO / MIX`,
-          title: `Black Teeth Radio: Sonic Boom with Brutuzz (01/11/2026)`,
-          meta: `32-track vinyl & dubplate selection`,
-          summary: `Tracklist features V.I.V.E.K, Alix Perez, Kahn, Goth-Trad, Mala - Lean Forward, Youngsta, and Epoch.`,
-          path: `reddit.com/r/realdubstep/comments/1xmp5p1/`
-        }
-      ]
-    };
+    // Live Clock in Top-Left Header
+    function updateClock() {
+      const clockEl = document.getElementById(`live-clock`);
+      const dateEl = document.getElementById(`live-date`);
+      if (!clockEl || !dateEl) return;
 
-    const NEWS_FEED = [
-      {
-        outlet: `We Rave You`,
-        date: `Nov 13, 2026`,
-        title: `Charlotte de Witte releases 'Azadi' EP with NAVA, proceeds to FEMENA`,
-        summary: `Featured alongside KICE & Kazdoura ('Al Ain') and Zorza's debut album 'internet niche fame'.`,
-        path: `weraveyou.com/category/music/`
-      },
-      {
-        outlet: `We Rave You`,
-        date: `Nov 13, 2026`,
-        title: `The Prodigy release 'Breathe' 30th anniversary vinyl`,
-        summary: `Milestone reissue celebrating three decades of the UK breakbeat/bass anthem.`,
-        path: `weraveyou.com/category/music/`
-      },
-      {
-        outlet: `We Rave You`,
-        date: `Nov 12, 2026`,
-        title: `John Summit drops official remix of Karol G's 'BbY WOW' & AMANATI announces 'Alpha Omega'`,
-        summary: `AMANATI's 2027 project features collaborations with KERLI, ASADI, and Roniit.`,
-        path: `weraveyou.com/category/music/`
-      },
-      {
-        outlet: `We Rave You`,
-        date: `Nov 10, 2026`,
-        title: `Aphex Twin's 'Selected Ambient Works 85-92' & Prodigy's 'Out of Space' turn 34`,
-        summary: `Electronic heritage spotlights alongside John Digweed's five-disc 'Quattro IV' on Bedrock.`,
-        path: `weraveyou.com/category/music/`
-      },
-      {
-        outlet: `UKF Archive`,
-        date: `Genre Dossier`,
-        title: `READY FI DEM: From Croydon's FWD>> & Tempa to 4 Core Subgenres`,
-        summary: `UKF traces dubstep from 2002 Croydon (Rinse FM, Big Apple, Ammunition, Black Sun Empire's 'Hyper Sun' 2009 upload) across 140, Brostep, Color Bass & Riddim.`,
-        path: `ukf.com/discover/genres/dubstep/`
-      },
-      {
-        outlet: `By The Wavs`,
-        date: `Sep 6, 2026`,
-        title: `DØMINA – Rockin It (Hard Techno 160 BPM) & Adam Swim – This Feeling`,
-        summary: `Reviewed by Jeremy Dentelstein & John Swan: click-and-saturation techno kick study and Cascade Records house bundle.`,
-        path: `bythewavs.com/category/music/`
-      }
-    ];
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, `0`);
+      clockEl.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 
-    // =========================================================================
-    // STATE
-    // =========================================================================
-    let state = {
-      subgenre: `All`,
-      week: `All`,
-      format: `All`,
-      search: ``,
-      sortBy: `date-desc`,
-      crateOnly: false,
-      crate: [`nmf315-drdonk-zaagstep`, `nmf316-dpmo-vol5`, `real-wraz-hyphoglobal`],
-      activeTrackId: `nmf315-drdonk-zaagstep`,
-      deckMode: `soundcloud`,
-      chartTab: `tracks`,
-      redditTab: `nmf`,
-      newsOutlet: `All`,
-      cutoffHz: 900
-    };
-
-    let isPlaying = false;
-    let playElapsed = 0;
-    const TRACK_DURATION = 32;
-    let playTimerId = null;
-    let animFrameId = null;
-    let subgenreChartInstance = null;
-
-    // Tone.js nodes
-    let toneFilter = null;
-    let toneLoop = null;
-    let toneSub = null;
-    let toneMid = null;
-    let toneNoise = null;
-    let toneAnalyser = null;
-    let toneInitialized = false;
-
-    // =========================================================================
-    // HELPERS: Theme tokens & SVG Generative Cover Art (Zero inline hexes)
-    // =========================================================================
-    function getThemeToken(name) {
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      const days = [`SUN`, `MON`, `TUE`, `WED`, `THU`, `FRI`, `SAT`];
+      const months = [`JAN`, `FEB`, `MAR`, `APR`, `MAY`, `JUN`, `JUL`, `AUG`, `SEP`, `OCT`, `NOV`, `DEC`];
+      dateEl.textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${pad(now.getDate())}, ${now.getFullYear()}`;
     }
 
-    function getSubgenreBadgeClass(subgenre) {
-      if (subgenre === `Tearout` || subgenre === `Brostep`) return `is-pink`;
-      if (subgenre === `140 / Deep`) return `is-cyan`;
-      if (subgenre === `Riddim`) return `is-yellow`;
-      return `is-purple`;
-    }
-
-    function buildProceduralArtSvg(track) {
-      const seed = track.id.split(``).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-      const sub = track.subgenre;
-      let accent = `var(--primary)`;
-      let accent2 = `var(--secondary)`;
-      if (sub === `140 / Deep`) { accent = `var(--secondary)`; accent2 = `var(--data-4)`; }
-      else if (sub === `Riddim`) { accent = `var(--tertiary)`; accent2 = `var(--primary)`; }
-      else if (sub === `Colorbass` || sub === `Melodic`) { accent = `var(--data-4)`; accent2 = `var(--secondary)`; }
-
-      const rings = [];
-      for (let i = 0; i < 4; i++) {
-        const r = 18 + i * 16 + (seed % 7);
-        const dash = `${6 + ((seed + i * 5) % 14)} ${4 + (i * 3)}`;
-        rings.push(`<circle cx="100" cy="80" r="${r}" fill="none" stroke="${i % 2 === 0 ? accent : accent2}" stroke-width="${i === 0 ? 2 : 1}" stroke-dasharray="${dash}" opacity="${0.85 - i * 0.16}"/>`);
-      }
-
-      const bars = [];
-      for (let b = 0; b < 14; b++) {
-        const h = 10 + ((seed * (b + 3)) % 46);
-        const x = 16 + b * 12;
-        bars.push(`<rect x="${x}" y="${150 - h}" width="6" height="${h}" fill="${b % 3 === 0 ? accent : accent2}" opacity="0.55"/>`);
-      }
-
-      const initials = track.artist.slice(0, 2).toUpperCase();
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" aria-hidden="true">
-        <rect width="200" height="160" fill="var(--surface-container-low)"/>
-        <line x1="0" y1="80" x2="200" y2="80" stroke="var(--outline-variant)" stroke-width="1"/>
-        <line x1="100" y1="0" x2="100" y2="160" stroke="var(--outline-variant)" stroke-width="1"/>
-        ${rings.join(``)}
-        ${bars.join(``)}
-        <rect x="68" y="58" width="64" height="44" fill="var(--background)" stroke="${accent}" stroke-width="1.5"/>
-        <text x="100" y="86" text-anchor="middle" fill="${accent}" font-family="Space Mono, monospace" font-size="18" font-weight="700">${initials}</text>
-      </svg>`;
-    }
-
-    function showToast(message) {
-      const toast = document.getElementById(`status-toast`);
-      if (!toast) return;
-      toast.textContent = message;
-      toast.classList.add(`is-visible`);
-      window.clearTimeout(toast._timer);
-      toast._timer = window.setTimeout(() => {
-        toast.classList.remove(`is-visible`);
-      }, 2400);
-    }
-
-    async function persistState() {
-      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
-        try {
-          await window.notebookAppApi.setAppState(state);
-        } catch (err) {
-          // Ignore sandbox persistence rejections silently
-        }
-      }
-    }
-
-    // =========================================================================
-    // FILTERING & SORTING
-    // =========================================================================
-    function getFilteredReleases() {
-      const q = state.search.trim().toLowerCase();
-      let list = RELEASES.filter((item) => {
-        if (state.subgenre !== `All` && item.subgenre !== state.subgenre) return false;
-        if (state.week !== `All` && item.week !== state.week) return false;
-        if (state.format !== `All` && item.format !== state.format) return false;
-        if (state.crateOnly && !state.crate.includes(item.id)) return false;
-        if (q) {
-          const hay = `${item.artist} ${item.title} ${item.label} ${item.subgenre} ${item.source}`.toLowerCase();
-          if (!hay.includes(q)) return false;
-        }
-        return true;
+    function getRankedTop100(mode) {
+      const copy = RAW_TRACKS.map((t) => {
+        const pulseShift = refreshPulseCount === 0 ? 0 : (((t.id + refreshPulseCount) % 3) - 1);
+        return {
+          ...t,
+          hypeDynamic: Math.min(99, Math.max(70, t.hype + pulseShift)),
+          reviewDynamic: Math.min(99, Math.max(75, t.review + (refreshPulseCount % 2 === 1 && t.id % 4 === 0 ? 1 : 0)))
+        };
       });
 
-      list.sort((a, b) => {
-        if (state.sortBy === `date-desc`) return b.date.localeCompare(a.date);
-        if (state.sortBy === `date-asc`) return a.date.localeCompare(b.date);
-        if (state.sortBy === `artist-asc`) return a.artist.localeCompare(b.artist);
-        if (state.sortBy === `artist-desc`) return b.artist.localeCompare(a.artist);
-        if (state.sortBy === `title-asc`) return a.title.localeCompare(b.title);
-        if (state.sortBy === `label-asc`) return a.label.localeCompare(b.label);
-        if (state.sortBy === `subgenre-asc`) return a.subgenre.localeCompare(b.subgenre);
-        if (state.sortBy === `format-asc`) return a.format.localeCompare(b.format);
-        if (state.sortBy === `bpm-desc`) return b.bpm - a.bpm;
-        return 0;
-      });
-
-      return list;
-    }
-
-    // =========================================================================
-    // RENDERING
-    // =========================================================================
-    function renderKpis() {
-      const totalEl = document.getElementById(`kpi-total-count`);
-      const nmfEl = document.getElementById(`kpi-nmf316-count`);
-      const crateEl = document.getElementById(`kpi-crate-count`);
-      if (totalEl) totalEl.textContent = String(RELEASES.length);
-      if (nmfEl) nmfEl.textContent = String(RELEASES.filter((r) => r.week === `NMF #316 (11/14)`).length);
-      if (crateEl) crateEl.textContent = String(state.crate.length);
-    }
-
-    function renderSubgenrePills() {
-      const container = document.getElementById(`subgenre-pills`);
-      if (!container) return;
-      const cats = [`All`, `Riddim`, `140 / Deep`, `Tearout`, `Melodic`, `Brostep`, `Colorbass`];
-      container.innerHTML = cats.map((cat) => {
-        const count = cat === `All` ? RELEASES.length : RELEASES.filter((r) => r.subgenre === cat).length;
-        const active = state.subgenre === cat ? `is-active` : ``;
-        const cyanCls = (cat === `140 / Deep` || cat === `All`) ? `is-cyan` : ``;
-        return `<button type="button" class="btn-neon btn-compact ${cyanCls} ${active}" onclick="setSubgenreFilter('${cat}')">${cat} (${count})</button>`;
-      }).join(``);
-    }
-
-    function renderFeaturedCards() {
-      const grid = document.getElementById(`featured-artwork-grid`);
-      if (!grid) return;
-      const featured = RELEASES.filter((r) => r.featured);
-      grid.innerHTML = featured.map((track) => {
-        const inCrate = state.crate.includes(track.id);
-        const badgeCls = getSubgenreBadgeClass(track.subgenre);
-        return `<article class="art-card">
-          <div class="art-card-visual">
-            ${buildProceduralArtSvg(track)}
-            <span class="art-card-rank">${track.rankBadge || track.format}</span>
-          </div>
-          <div class="art-card-body">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-              <span class="tag-chip ${badgeCls}">${track.subgenre}</span>
-              <span class="mono-label">${track.bpm} BPM</span>
-            </div>
-            <h3>${track.title}</h3>
-            <div class="art-card-meta">${track.artist} — <span style="color:var(--on-surface);">${track.label}</span></div>
-            <p class="art-card-meta">${track.notes}</p>
-            <div class="art-card-actions">
-              <button type="button" class="btn-neon btn-compact is-cyan" style="flex:1;" onclick="loadTrackAndPlay('${track.id}')">
-                <span>Load in Deck</span>
-              </button>
-              <button type="button" class="btn-neon btn-compact ${inCrate ? `is-active` : ``}" onclick="toggleCrateById('${track.id}')" aria-label="Toggle crate for ${track.title}">
-                <span>${inCrate ? `Saved` : `Save`}</span>
-              </button>
-            </div>
-          </div>
-        </article>`;
-      }).join(``);
-    }
-
-    function renderReleaseTable() {
-      const tbody = document.getElementById(`release-tbody`);
-      const emptyEl = document.getElementById(`table-empty-state`);
-      const countEl = document.getElementById(`table-showing-label`);
-      if (!tbody) return;
-
-      const list = getFilteredReleases();
-      if (countEl) countEl.textContent = `Showing ${list.length} of ${RELEASES.length} releases`;
-
-      if (list.length === 0) {
-        tbody.innerHTML = ``;
-        if (emptyEl) emptyEl.style.display = `flex`;
-        return;
+      if (mode === `hyped`) {
+        copy.sort((a, b) => (b.hypeDynamic - a.hypeDynamic) || b.date.localeCompare(a.date));
+      } else if (mode === `reviewed`) {
+        copy.sort((a, b) => (b.reviewDynamic - a.reviewDynamic) || (b.hypeDynamic - a.hypeDynamic));
+      } else if (mode === `latest`) {
+        copy.sort((a, b) => b.date.localeCompare(a.date) || (b.hypeDynamic - a.hypeDynamic));
+      } else if (mode === `charts`) {
+        copy.sort((a, b) => (a.chart - b.chart) || (b.hypeDynamic - a.hypeDynamic));
       }
-      if (emptyEl) emptyEl.style.display = `none`;
 
-      tbody.innerHTML = list.map((track) => {
-        const activeRow = track.id === state.activeTrackId ? `is-playing` : ``;
-        const inCrate = state.crate.includes(track.id);
-        const badgeCls = getSubgenreBadgeClass(track.subgenre);
-        return `<tr class="${activeRow}" onclick="loadTrackAndPlay('${track.id}')">
-          <td><strong>${track.artist}</strong></td>
-          <td>${track.title}</td>
-          <td style="color:var(--on-surface-variant);">${track.label}</td>
-          <td><span class="tag-chip ${badgeCls}">${track.subgenre}</span></td>
-          <td class="mono-cell">${track.format}</td>
-          <td class="mono-cell">${track.date}</td>
-          <td class="mono-cell">${track.source}</td>
-          <td onclick="event.stopPropagation()">
-            <div style="display:flex;gap:6px;">
-              <button type="button" class="btn-neon btn-compact is-cyan" onclick="loadTrackAndPlay('${track.id}')" title="Audition in deck">Play</button>
-              <button type="button" class="btn-neon btn-compact ${inCrate ? `is-active` : ``}" onclick="toggleCrateById('${track.id}')" title="Save to crate">${inCrate ? `Saved` : `Save`}</button>
-            </div>
-          </td>
-        </tr>`;
-      }).join(``);
+      return copy.slice(0, 100).map((t, idx) => ({
+        ...t,
+        rank: idx + 1,
+        delta: refreshPulseCount === 0
+          ? (idx < 3 ? `TOP` : (t.date >= `2026-11-12` ? `NEW` : `—`))
+          : (((t.id + refreshPulseCount) % 5 === 0) ? `▲1` : ((t.id + refreshPulseCount) % 7 === 0 ? `▼1` : `—`))
+      }));
     }
 
-    function renderDeck() {
-      const track = RELEASES.find((r) => r.id === state.activeTrackId) || RELEASES[0];
+    function setActiveTab(mode) {
+      activeTab = mode;
+      const modes = [`hyped`, `reviewed`, `latest`, `charts`];
+      modes.forEach((m) => {
+        const btn = document.getElementById(`tab-${m}`);
+        if (btn) {
+          btn.classList.toggle(`is-active`, m === mode);
+          btn.setAttribute(`aria-selected`, m === mode ? `true` : `false`);
+        }
+      });
+      renderDashboard();
+    }
+
+    function applyFilters() {
+      renderDashboard();
+    }
+
+    function resetFilters() {
+      const searchEl = document.getElementById(`search-input`);
+      const sourceEl = document.getElementById(`source-select`);
+      const genreEl = document.getElementById(`subgenre-select`);
+      if (searchEl) searchEl.value = ``;
+      if (sourceEl) sourceEl.value = `ALL`;
+      if (genreEl) genreEl.value = `ALL`;
+      renderDashboard();
+    }
+
+    function refreshLeaderboard() {
+      refreshPulseCount += 1;
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, `0`);
+      const statusEl = document.getElementById(`sync-status`);
+      if (statusEl) {
+        statusEl.textContent = `REFRESHED @ ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} (PASS #${refreshPulseCount})`;
+      }
+      renderDashboard();
+    }
+
+    function buildStreamUrls(track) {
+      const query = encodeURIComponent(`${track.artist} ${track.title}`);
+      const spotifyUrl = track.spotifyId
+        ? `open.spotify.com/${track.spotifyType === `album` ? `album` : `track`}/${track.spotifyId}`
+        : `open.spotify.com/search/${query}`;
+      const soundcloudUrl = track.soundcloudPath
+        ? track.soundcloudPath
+        : `soundcloud.com/search?q=${query}`;
+      const youtubeUrl = `youtube.com/results?search_query=${query}`;
+      const beatportUrl = `beatport.com/search?q=${query}`;
+
+      return [
+        { platform: `Spotify`, url: spotifyUrl },
+        { platform: `SoundCloud`, url: soundcloudUrl },
+        { platform: `YouTube`, url: youtubeUrl },
+        { platform: `Beatport`, url: beatportUrl }
+      ];
+    }
+
+    function inspectTrackLinks(trackId) {
+      selectedTrackId = trackId;
+      const track = RAW_TRACKS.find((t) => t.id === trackId);
       if (!track) return;
 
-      const artEl = document.getElementById(`deck-art-container`);
-      const headingEl = document.getElementById(`deck-heading`);
-      const titleEl = document.getElementById(`deck-track-title`);
-      const artistEl = document.getElementById(`deck-artist-label`);
-      const notesEl = document.getElementById(`deck-notes`);
-      const badgesEl = document.getElementById(`deck-badges`);
-      const uriEl = document.getElementById(`deck-uri`);
-      const crateBtn = document.getElementById(`deck-crate-btn`);
-      const modeScBtn = document.getElementById(`mode-sc-btn`);
-      const modeYtBtn = document.getElementById(`mode-yt-btn`);
-      const modeStatus = document.getElementById(`deck-mode-status`);
+      const nameEl = document.getElementById(`inspector-track-name`);
+      const gridEl = document.getElementById(`stream-links-grid`);
+      const feedbackEl = document.getElementById(`copy-feedback`);
+      if (feedbackEl) feedbackEl.textContent = ``;
+      if (nameEl) nameEl.textContent = `${track.artist} — ${track.title} (${track.date})`;
+      if (!gridEl) return;
 
-      if (artEl) artEl.innerHTML = buildProceduralArtSvg(track);
-      if (headingEl) headingEl.textContent = state.deckMode === `soundcloud` ? `SoundCloud Waveform Deck` : `YouTube Premiere Visualizer`;
-      if (titleEl) titleEl.textContent = track.title;
-      if (artistEl) artistEl.textContent = `${track.artist} • ${track.label}`;
-      if (notesEl) notesEl.textContent = track.notes;
-      if (uriEl) uriEl.textContent = track.uri;
+      const links = buildStreamUrls(track);
+      gridEl.innerHTML = links.map((item) => `
+        <div class="stream-card">
+          <div class="stream-card-top">
+            <span class="stream-platform">${item.platform}</span>
+            <button type="button" class="btn-compact" onclick="copyStreamUrl(${track.id}, '${item.platform}')">Copy URL</button>
+          </div>
+          <span class="stream-url-text">${item.url}</span>
+        </div>
+      `).join(``);
 
-      if (badgesEl) {
-        const badgeCls = getSubgenreBadgeClass(track.subgenre);
-        badgesEl.innerHTML = `
-          <span class="tag-chip ${badgeCls}">${track.subgenre}</span>
-          <span class="tag-chip is-cyan">${track.bpm} BPM</span>
-          <span class="tag-chip">${track.format}</span>
-          <span class="tag-chip">${track.date}</span>
+      updateRowStates();
+    }
+
+    function copyStreamUrl(trackId, platform) {
+      const track = RAW_TRACKS.find((t) => t.id === trackId);
+      if (!track) return;
+      const match = buildStreamUrls(track).find((l) => l.platform === platform);
+      const urlText = match ? match.url : ``;
+      const feedbackEl = document.getElementById(`copy-feedback`);
+      if (urlText && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(`https://${urlText}`).catch(() => {});
+      }
+      if (feedbackEl) {
+        feedbackEl.textContent = `COPIED ${platform.toUpperCase()} URL TO CLIPBOARD`;
+      }
+    }
+
+    function updateRowStates() {
+      const rows = document.querySelectorAll(`#leaderboard-body tr[data-track-id]`);
+      rows.forEach((row) => {
+        const id = Number(row.getAttribute(`data-track-id`));
+        row.classList.toggle(`is-selected`, id === selectedTrackId);
+      });
+      const playBtns = document.querySelectorAll(`#leaderboard-body button[data-play-id]`);
+      playBtns.forEach((btn) => {
+        const id = Number(btn.getAttribute(`data-play-id`));
+        const active = id === playingTrackId;
+        btn.classList.toggle(`is-playing`, active);
+        btn.textContent = active ? `■ Stop` : `▶ Play`;
+      });
+    }
+
+    function renderSourceChart(list) {
+      const chartEl = document.getElementById(`source-chart`);
+      if (!chartEl) return;
+
+      const trackedSources = [
+        `r/dubstep NMF`,
+        `Spotify`,
+        `BeatTracker`,
+        `Beatport`,
+        `SoundCloud`,
+        `r/realdubstep`,
+        `By The Wavs`,
+        `We Rave You`,
+        `UKF`
+      ];
+
+      const counts = trackedSources.map((src) => ({
+        name: src,
+        count: list.filter((t) => t.sources.includes(src)).length
+      }));
+      const maxCount = Math.max(1, ...counts.map((c) => c.count));
+
+      const width = 560;
+      const barH = 18;
+      const gap = 8;
+      const height = counts.length * (barH + gap) + 12;
+
+      const rowsSvg = counts.map((item, idx) => {
+        const y = idx * (barH + gap) + 6;
+        const barMaxW = 330;
+        const w = Math.max(4, Math.round((item.count / maxCount) * barMaxW));
+        const isPrimary = idx === 0 || idx === 2;
+        const strokeColor = isPrimary ? `var(--data-1)` : `var(--data-2)`;
+        const fillOpacity = isPrimary ? `0.28` : `0.2`;
+        return `
+          <g>
+            <text x="0" y="${y + 13}" fill="var(--on-surface-variant)" font-family="var(--font-label)" font-size="11">${item.name}</text>
+            <rect x="135" y="${y}" width="${barMaxW}" height="${barH}" fill="var(--surface-container-low)" stroke="var(--outline-variant)" stroke-width="1" rx="2"/>
+            <rect x="135" y="${y}" width="${w}" height="${barH}" fill="${strokeColor}" fill-opacity="${fillOpacity}" stroke="${strokeColor}" stroke-width="1" rx="2"/>
+            <text x="${145 + w}" y="${y + 13}" fill="var(--on-surface)" font-family="var(--font-label)" font-size="11" font-weight="700">${item.count}</text>
+          </g>
         `;
-      }
-
-      if (crateBtn) {
-        const inCrate = state.crate.includes(track.id);
-        crateBtn.classList.toggle(`is-active`, inCrate);
-        crateBtn.innerHTML = `<span>${inCrate ? `Saved in Crate` : `Save to Crate`}</span>`;
-      }
-
-      if (modeScBtn) modeScBtn.classList.toggle(`is-active`, state.deckMode === `soundcloud`);
-      if (modeYtBtn) modeYtBtn.classList.toggle(`is-active`, state.deckMode === `youtube`);
-      if (modeStatus) {
-        modeStatus.textContent = state.deckMode === `soundcloud`
-          ? `SOUNDCLOUD WAVEFORM ENGINE // ${track.bpm} BPM`
-          : `YOUTUBE PREMIERE SPECTRUM // ${track.subgenre.toUpperCase()}`;
-      }
-    }
-
-    function renderCrateList() {
-      const container = document.getElementById(`crate-list`);
-      const filterBtn = document.getElementById(`crate-filter-btn`);
-      if (filterBtn) filterBtn.classList.toggle(`is-active`, state.crateOnly);
-      if (!container) return;
-
-      if (state.crate.length === 0) {
-        container.innerHTML = `<div class="feed-sub" style="padding:var(--space-sm) 0;">Crate is empty. Click "Save" on any track to bookmark it.</div>`;
-        return;
-      }
-
-      container.innerHTML = state.crate.map((id) => {
-        const t = RELEASES.find((r) => r.id === id);
-        if (!t) return ``;
-        return `<div class="crate-item">
-          <span class="crate-item-title"><strong>${t.artist}</strong> — ${t.title}</span>
-          <div style="display:flex;gap:4px;">
-            <button type="button" class="btn-neon btn-compact is-cyan" style="min-height:28px;padding:2px 8px;" onclick="loadTrackAndPlay('${t.id}')">Play</button>
-            <button type="button" class="btn-neon btn-compact" style="min-height:28px;padding:2px 8px;" onclick="toggleCrateById('${t.id}')" aria-label="Remove ${t.title}">×</button>
-          </div>
-        </div>`;
       }).join(``);
+
+      chartEl.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}" role="img" aria-label="Track count by aggregated source">
+          ${rowsSvg}
+        </svg>
+      `;
     }
 
-    function renderBeatTracker() {
-      const listEl = document.getElementById(`beattracker-list`);
-      const tBtn = document.getElementById(`chart-tracks-btn`);
-      const rBtn = document.getElementById(`chart-releases-btn`);
-      if (tBtn) tBtn.classList.toggle(`is-active`, state.chartTab === `tracks`);
-      if (rBtn) rBtn.classList.toggle(`is-active`, state.chartTab === `releases`);
-      if (!listEl) return;
+    function getFilteredList() {
+      const top100 = getRankedTop100(activeTab);
+      const searchEl = document.getElementById(`search-input`);
+      const sourceEl = document.getElementById(`source-select`);
+      const genreEl = document.getElementById(`subgenre-select`);
 
-      const items = BEATTRACKER_CHARTS[state.chartTab] || [];
-      listEl.innerHTML = items.map((row) => `
-        <div class="feed-card ${row.rank <= 3 ? `is-highlighted` : ``}">
-          <div class="feed-card-top">
-            <span class="tag-chip is-yellow">#${row.rank} DUBSTEP</span>
-            <span class="tag-chip ${getSubgenreBadgeClass(row.subgenre)}">${row.subgenre}</span>
-          </div>
-          <div class="feed-title">${row.title}</div>
-          <div class="feed-sub">${row.artists} • <em>${row.label}</em></div>
-          <div class="shortcut-row">
-            <span class="shortcut-path">beattracker.com/categories/dubstep/18</span>
-            <button type="button" class="btn-neon btn-compact is-cyan" style="min-height:28px;padding:2px 8px;" onclick="loadTrackAndPlay('${row.trackId}')">Audition</button>
-          </div>
-        </div>
-      `).join(``);
-    }
+      const q = searchEl ? searchEl.value.trim().toLowerCase() : ``;
+      const src = sourceEl ? sourceEl.value : `ALL`;
+      const gen = genreEl ? genreEl.value : `ALL`;
 
-    function renderRedditList() {
-      const listEl = document.getElementById(`reddit-list`);
-      const nmfBtn = document.getElementById(`reddit-nmf-btn`);
-      const realBtn = document.getElementById(`reddit-real-btn`);
-      if (nmfBtn) nmfBtn.classList.toggle(`is-active`, state.redditTab === `nmf`);
-      if (realBtn) realBtn.classList.toggle(`is-active`, state.redditTab === `real`);
-      if (!listEl) return;
-
-      const items = REDDIT_FEEDS[state.redditTab] || [];
-      listEl.innerHTML = items.map((item, idx) => `
-        <div class="feed-card ${idx === 0 ? `is-highlighted` : ``}">
-          <div class="feed-card-top">
-            <span class="tag-chip is-cyan">${item.tag}</span>
-          </div>
-          <div class="feed-title">${item.title}</div>
-          <div class="feed-sub" style="color:var(--on-surface);font-size:0.75rem;">${item.meta}</div>
-          <p class="feed-sub">${item.summary}</p>
-          <div class="shortcut-row">
-            <span class="shortcut-path">${item.path}</span>
-            <button type="button" class="btn-neon btn-compact" style="min-height:28px;padding:2px 8px;" onclick="copyTextValue('${item.path}')">Copy Path</button>
-          </div>
-        </div>
-      `).join(``);
-    }
-
-    function renderNewsList() {
-      const listEl = document.getElementById(`news-list`);
-      if (!listEl) return;
-      const items = NEWS_FEED.filter((n) => state.newsOutlet === `All` || n.outlet === state.newsOutlet);
-      listEl.innerHTML = items.map((item) => `
-        <div class="feed-card">
-          <div class="feed-card-top">
-            <span class="tag-chip is-purple">${item.outlet}</span>
-            <span class="mono-label">${item.date}</span>
-          </div>
-          <div class="feed-title">${item.title}</div>
-          <p class="feed-sub">${item.summary}</p>
-          <div class="shortcut-row">
-            <span class="shortcut-path">${item.path}</span>
-            <button type="button" class="btn-neon btn-compact" style="min-height:28px;padding:2px 8px;" onclick="copyTextValue('${item.path}')">Copy Path</button>
-          </div>
-        </div>
-      `).join(``);
-    }
-
-    function renderSubgenreChart() {
-      const canvas = document.getElementById(`subgenre-chart`);
-      if (!canvas || typeof Chart === `undefined`) return;
-
-      const labels = [`140 / Deep`, `Brostep`, `Tearout`, `Riddim`, `Colorbass`, `Melodic`];
-      const counts = labels.map((l) => RELEASES.filter((r) => r.subgenre === l).length);
-
-      const cPink = getThemeToken(`--data-1`);
-      const cCyan = getThemeToken(`--data-2`);
-      const cYellow = getThemeToken(`--data-3`);
-      const cPurple = getThemeToken(`--data-4`);
-      const cMuted = getThemeToken(`--on-surface-variant`);
-      const cGrid = getThemeToken(`--outline-variant`);
-
-      const colors = [cCyan, cPink, cPink, cYellow, cPurple, cPurple];
-
-      if (subgenreChartInstance) {
-        subgenreChartInstance.destroy();
-      }
-
-      subgenreChartInstance = new Chart(canvas.getContext(`2d`), {
-        type: `bar`,
-        data: {
-          labels: labels,
-          datasets: [{
-            label: `Tracked Drops`,
-            data: counts,
-            backgroundColor: colors.map((c) => `${c}33`),
-            borderColor: colors,
-            borderWidth: 1.5
-          }]
-        },
-        options: {
-          indexAxis: `y`,
-          responsive: true,
-          maintainAspectRatio: false,
-          onClick: function (_evt, elements) {
-            if (elements && elements.length > 0) {
-              const clicked = labels[elements[0].index];
-              setSubgenreFilter(state.subgenre === clicked ? `All` : clicked);
-            }
-          },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: getThemeToken(`--surface-container-high`),
-              borderColor: cPink,
-              borderWidth: 1,
-              titleColor: getThemeToken(`--on-surface`),
-              bodyColor: cCyan
-            }
-          },
-          scales: {
-            x: {
-              beginAtZero: true,
-              grid: { color: cGrid },
-              ticks: { color: cMuted, font: { family: `Space Mono`, size: 11 } }
-            },
-            y: {
-              grid: { display: false },
-              ticks: { color: getThemeToken(`--on-surface`), font: { family: `Space Mono`, size: 11 } }
-            }
-          }
-        }
+      return top100.filter((t) => {
+        const matchesQuery = !q || t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q) || t.sources.some((s) => s.toLowerCase().includes(q));
+        const matchesSource = src === `ALL` || t.sources.includes(src);
+        const matchesGenre = gen === `ALL` || t.genre === gen;
+        return matchesQuery && matchesSource && matchesGenre;
       });
     }
 
-    // =========================================================================
-    // AUDIO SYNTH ENGINE (Tone.js) & CANVAS WAVEFORM / SPECTRUM VISUALIZER
-    // =========================================================================
-    async function ensureToneReady() {
-      if (toneInitialized || typeof Tone === `undefined`) return;
-      await Tone.start();
-      toneFilter = new Tone.Filter(state.cutoffHz, `lowpass`).toDestination();
-      toneAnalyser = new Tone.Analyser(`waveform`, 64);
-      toneFilter.connect(toneAnalyser);
+    function renderDashboardTableOnly() {
+      const tbody = document.getElementById(`leaderboard-body`);
+      if (!tbody) return;
+      const filtered = getFilteredList();
 
-      toneSub = new Tone.Synth({
-        oscillator: { type: `sine` },
-        envelope: { attack: 0.01, decay: 0.22, sustain: 0.5, release: 0.3 }
-      }).connect(toneFilter);
-
-      toneMid = new Tone.FMSynth({
-        harmonicity: 2.5,
-        modulationIndex: 10,
-        oscillator: { type: `sawtooth` },
-        envelope: { attack: 0.01, decay: 0.18, sustain: 0.25, release: 0.2 }
-      }).connect(toneFilter);
-      toneMid.volume.value = -8;
-
-      toneNoise = new Tone.NoiseSynth({
-        noise: { type: `white` },
-        envelope: { attack: 0.005, decay: 0.11, sustain: 0 }
-      }).connect(toneFilter);
-      toneNoise.volume.value = -14;
-
-      toneInitialized = true;
-    }
-
-    function startTrackLoop(track) {
-      if (!toneInitialized || typeof Tone === `undefined`) return;
-      if (toneLoop) {
-        toneLoop.stop();
-        toneLoop.dispose();
-        toneLoop = null;
-      }
-      Tone.Transport.stop();
-      Tone.Transport.bpm.value = track.bpm || 140;
-
-      const sub = track.subgenre;
-      let step = 0;
-
-      toneLoop = new Tone.Loop((time) => {
-        const s = step % 8;
-        // Kick / Sub pulse on 0, half-time snare on 4
-        if (s === 0 || (sub === `Tearout` && s === 3)) {
-          toneSub.triggerAttackRelease(`F1`, `8n`, time);
-        }
-        if (s === 4) {
-          toneNoise.triggerAttackRelease(`16n`, time);
-        }
-        // Subgenre signature bass voice
-        if (sub === `Riddim`) {
-          if (s % 2 === 0) toneMid.triggerAttackRelease(`F2`, `16n`, time);
-        } else if (sub === `Tearout`) {
-          toneMid.triggerAttackRelease(s % 2 === 0 ? `E2` : `F2`, `32n`, time);
-        } else if (sub === `140 / Deep`) {
-          if (s === 0 || s === 5) toneSub.triggerAttackRelease(`D1`, `4n`, time);
-        } else if (sub === `Colorbass` || sub === `Melodic`) {
-          const notes = [`F3`, `Ab3`, `C4`, `Eb4`, `G3`, `Bb3`, `C4`, `F4`];
-          toneMid.triggerAttackRelease(notes[s], `8n`, time);
-        } else {
-          // Brostep wobble alternation
-          if (s === 0 || s === 2 || s === 5 || s === 6) {
-            toneMid.triggerAttackRelease(s === 6 ? `G2` : `F2`, `8n`, time);
-          }
-        }
-        step++;
-      }, `8n`).start(0);
-
-      Tone.Transport.start();
-    }
-
-    function stopAudioEngine() {
-      if (toneLoop) {
-        toneLoop.stop();
-      }
-      if (typeof Tone !== `undefined` && Tone.Transport) {
-        Tone.Transport.stop();
-      }
-    }
-
-    function updatePlayUi() {
-      const btn = document.getElementById(`play-toggle-btn`);
-      const lbl = document.getElementById(`play-btn-label`);
-      if (btn) btn.classList.toggle(`is-active`, isPlaying);
-      if (lbl) lbl.textContent = isPlaying ? `Pause` : `Play Synth`;
-    }
-
-    function startVisualizerLoop() {
-      const canvas = document.getElementById(`deck-canvas`);
-      if (!canvas) return;
-      const ctx = canvas.getContext(`2d`);
-      if (!ctx) return;
-
-      cancelAnimationFrame(animFrameId);
-      let phase = 0;
-
-      function draw() {
-        const w = canvas.clientWidth || 600;
-        const h = canvas.clientHeight || 112;
-        if (canvas.width !== w || canvas.height !== h) {
-          canvas.width = w;
-          canvas.height = h;
-        }
-
-        ctx.clearRect(0, 0, w, h);
-
-        const cPink = getThemeToken(`--primary`);
-        const cCyan = getThemeToken(`--secondary`);
-        const cGrid = getThemeToken(`--outline-variant`);
-
-        // HUD gridlines
-        ctx.strokeStyle = cGrid;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(0, h / 2);
-        ctx.lineTo(w, h / 2);
-        ctx.stroke();
-
-        let samples = null;
-        if (isPlaying && toneAnalyser) {
-          samples = toneAnalyser.getValue();
-        }
-
-        if (state.deckMode === `soundcloud`) {
-          // SoundCloud-style vertical bar waveform
-          const barCount = 56;
-          const barW = Math.max(3, (w / barCount) - 3);
-          const progressRatio = playElapsed / TRACK_DURATION;
-          for (let i = 0; i < barCount; i++) {
-            const x = i * (w / barCount);
-            let amp = 0.25 + 0.45 * Math.abs(Math.sin(i * 0.45 + phase * (isPlaying ? 0.14 : 0.01)));
-            if (samples && samples.length > 0) {
-              const sVal = Math.abs(samples[i % samples.length]);
-              amp = Math.min(0.95, 0.2 + sVal * 2.2);
-            }
-            const barH = Math.max(8, amp * (h - 14));
-            const y = (h - barH) / 2;
-            const played = (i / barCount) <= progressRatio;
-            ctx.fillStyle = played ? cPink : cCyan;
-            ctx.globalAlpha = played ? 0.92 : 0.38;
-            ctx.fillRect(x, y, barW, barH);
-          }
-          ctx.globalAlpha = 1;
-        } else {
-          // YouTube Premiere continuous oscilloscope trace
-          ctx.strokeStyle = isPlaying ? cPink : cCyan;
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          const pts = 64;
-          for (let i = 0; i < pts; i++) {
-            const x = (i / (pts - 1)) * w;
-            let val = Math.sin(i * 0.35 + phase * (isPlaying ? 0.18 : 0.02)) * (isPlaying ? 0.45 : 0.12);
-            if (samples && samples.length > 0) {
-              val = samples[i % samples.length] * 1.4;
-            }
-            const y = (h / 2) + val * (h * 0.42);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-        }
-
-        phase += 1;
-        animFrameId = requestAnimationFrame(draw);
-      }
-
-      draw();
-    }
-
-    // =========================================================================
-    // HOISTED INTERACTION HANDLERS (onclick / onchange / oninput)
-    // =========================================================================
-    async function togglePlay() {
-      const track = RELEASES.find((r) => r.id === state.activeTrackId) || RELEASES[0];
-      if (!track) return;
-
-      if (!isPlaying) {
-        try {
-          await ensureToneReady();
-          startTrackLoop(track);
-        } catch (err) {
-          // Audio blocked fallback: keep visual playback running
-        }
-        isPlaying = true;
-        window.clearInterval(playTimerId);
-        playTimerId = window.setInterval(() => {
-          playElapsed += 0.5;
-          if (playElapsed >= TRACK_DURATION) playElapsed = 0;
-          const scrub = document.getElementById(`deck-scrubber`);
-          const cur = document.getElementById(`deck-time-cur`);
-          if (scrub) scrub.value = String(playElapsed);
-          if (cur) cur.textContent = `0:${String(Math.floor(playElapsed)).padStart(2, `0`)}`;
-        }, 500);
-      } else {
-        isPlaying = false;
-        window.clearInterval(playTimerId);
-        stopAudioEngine();
-      }
-      updatePlayUi();
-    }
-
-    async function loadTrackAndPlay(trackId) {
-      const track = RELEASES.find((r) => r.id === trackId);
-      if (!track) return;
-      state.activeTrackId = track.id;
-      playElapsed = 0;
-      const scrub = document.getElementById(`deck-scrubber`);
-      const cur = document.getElementById(`deck-time-cur`);
-      if (scrub) scrub.value = `0`;
-      if (cur) cur.textContent = `0:00`;
-
-      renderDeck();
-      renderReleaseTable();
-      await persistState();
-
-      if (!isPlaying) {
-        await togglePlay();
-      } else {
-        try {
-          await ensureToneReady();
-          startTrackLoop(track);
-        } catch (err) {}
-      }
-    }
-
-    function stepTrack(delta) {
-      const list = getFilteredReleases();
-      const pool = list.length > 0 ? list : RELEASES;
-      const idx = pool.findIndex((r) => r.id === state.activeTrackId);
-      const nextIdx = idx === -1 ? 0 : (idx + delta + pool.length) % pool.length;
-      loadTrackAndPlay(pool[nextIdx].id);
-    }
-
-    function scrubDeck(val) {
-      playElapsed = parseFloat(val) || 0;
-      const cur = document.getElementById(`deck-time-cur`);
-      if (cur) cur.textContent = `0:${String(Math.floor(playElapsed)).padStart(2, `0`)}`;
-    }
-
-    function updateFilterCutoff(val) {
-      const hz = parseInt(val, 10) || 900;
-      state.cutoffHz = hz;
-      const lbl = document.getElementById(`cutoff-val`);
-      if (lbl) lbl.textContent = String(hz);
-      if (toneFilter) {
-        toneFilter.frequency.value = hz;
-      }
-    }
-
-    function setDeckMode(mode) {
-      state.deckMode = mode;
-      renderDeck();
-      persistState();
-    }
-
-    function setSubgenreFilter(sub) {
-      state.subgenre = sub;
-      renderSubgenrePills();
-      renderReleaseTable();
-      persistState();
-    }
-
-    function handleSearchInput(val) {
-      state.search = val;
-      renderReleaseTable();
-    }
-
-    function handleWeekChange(val) {
-      state.week = val;
-      renderReleaseTable();
-      persistState();
-    }
-
-    function handleFormatChange(val) {
-      state.format = val;
-      renderReleaseTable();
-      persistState();
-    }
-
-    function handleSortSelect(val) {
-      state.sortBy = val;
-      renderReleaseTable();
-      persistState();
-    }
-
-    function toggleColSort(col) {
-      const keyAsc = `${col}-asc`;
-      const keyDesc = `${col}-desc`;
-      if (col === `date`) {
-        state.sortBy = state.sortBy === `date-desc` ? `date-asc` : `date-desc`;
-      } else {
-        state.sortBy = state.sortBy === keyAsc ? keyDesc : keyAsc;
-      }
-      renderReleaseTable();
-    }
-
-    function toggleCrateOnlyFilter() {
-      state.crateOnly = !state.crateOnly;
-      renderCrateList();
-      renderReleaseTable();
-      persistState();
-    }
-
-    function clearAllFilters() {
-      state.subgenre = `All`;
-      state.week = `All`;
-      state.format = `All`;
-      state.search = ``;
-      state.crateOnly = false;
-      const sInput = document.getElementById(`search-input`);
-      const wSel = document.getElementById(`week-select`);
-      const fSel = document.getElementById(`format-select`);
-      if (sInput) sInput.value = ``;
-      if (wSel) wSel.value = `All`;
-      if (fSel) fSel.value = `All`;
-      renderSubgenrePills();
-      renderCrateList();
-      renderReleaseTable();
-      persistState();
-    }
-
-    function toggleCrateById(id) {
-      const idx = state.crate.indexOf(id);
-      if (idx === -1) {
-        state.crate.push(id);
-        showToast(`Added release to My Crate`);
-      } else {
-        state.crate.splice(idx, 1);
-        showToast(`Removed release from My Crate`);
-      }
-      renderKpis();
-      renderCrateList();
-      renderFeaturedCards();
-      renderReleaseTable();
-      renderDeck();
-      persistState();
-    }
-
-    function toggleCrateCurrent() {
-      toggleCrateById(state.activeTrackId);
-    }
-
-    function handleResetCrate(btn) {
-      if (!btn) return;
-      if (btn.dataset.armed !== `true`) {
-        btn.dataset.armed = `true`;
-        btn.querySelector(`span`).textContent = `Confirm Reset?`;
-        window.setTimeout(() => {
-          if (btn.dataset.armed === `true`) {
-            btn.dataset.armed = `false`;
-            btn.querySelector(`span`).textContent = `Reset Crate`;
-          }
-        }, 3500);
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state">
+              No tracks match your current filter criteria. Clear filters to view the full Top 100 leaderboard.
+            </td>
+          </tr>
+        `;
         return;
       }
-      btn.dataset.armed = `false`;
-      btn.querySelector(`span`).textContent = `Reset Crate`;
-      state.crate = [];
-      state.crateOnly = false;
-      renderKpis();
-      renderCrateList();
-      renderFeaturedCards();
-      renderReleaseTable();
-      renderDeck();
-      persistState();
-      showToast(`Crate cleared`);
+
+      tbody.innerHTML = filtered.map((track) => {
+        const rankStr = String(track.rank).padStart(3, `0`);
+        const isTop3 = track.rank <= 3;
+        const isPlaying = playingTrackId === track.id;
+        const isSelected = selectedTrackId === track.id;
+
+        const metricText = activeTab === `hyped`
+          ? `${track.hypeDynamic} HYPE`
+          : activeTab === `reviewed`
+            ? `${track.reviewDynamic}/100`
+            : activeTab === `latest`
+              ? track.date
+              : `#${track.chart} CHART`;
+
+        const genreClass = track.genre === `Brostep` ? `is-pink` : (track.genre === `140 / Deep` ? `is-cyan` : `is-yellow`);
+        const deltaClass = track.delta === `NEW` || track.delta === `TOP` ? `is-new` : ``;
+
+        return `
+          <tr data-track-id="${track.id}" class="${isSelected ? `is-selected` : ``}">
+            <td class="rank-cell">
+              <span class="rank-num ${isTop3 ? `is-top3` : ``}">#${rankStr}</span>
+              <span class="rank-delta ${deltaClass}">${track.delta}</span>
+            </td>
+            <td>
+              <div class="track-title">${track.title}</div>
+              <div class="track-artist">${track.artist}</div>
+            </td>
+            <td><span class="badge ${genreClass}">${track.genre}</span></td>
+            <td class="date-cell">${track.date}</td>
+            <td>
+              <div class="sources-wrap">
+                ${track.sources.map((s) => `<span class="badge">${s}</span>`).join(``)}
+              </div>
+            </td>
+            <td class="score-val">${metricText}</td>
+            <td>
+              <div class="actions-wrap">
+                <button type="button" data-play-id="${track.id}" class="btn-compact ${isPlaying ? `is-playing` : ``}" onclick="playTrackPreview(${track.id})" aria-label="Play preview for ${track.title.replace(/"/g, `&quot;`)}">
+                  ${isPlaying ? `■ Stop` : `▶ Play`}
+                </button>
+                <button type="button" class="btn-compact" onclick="inspectTrackLinks(${track.id})">Links</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join(``);
     }
 
-    function copyTextValue(text) {
-      if (navigator.clipboard && typeof navigator.clipboard.writeText === `function`) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast(`Copied: ${text}`);
-        }).catch(() => {
-          showToast(`Handle: ${text}`);
-        });
-      } else {
-        showToast(`Handle: ${text}`);
+    function renderDashboard() {
+      const top100 = getRankedTop100(activeTab);
+      const filtered = getFilteredList();
+
+      const tabNames = {
+        hyped: `Most Hyped`,
+        reviewed: `Best Reviewed`,
+        latest: `Latest Drops`,
+        charts: `Chart Toppers`
+      };
+      const metricHeads = {
+        hyped: `Hype Score`,
+        reviewed: `Review Score`,
+        latest: `Drop Date`,
+        charts: `Chart Peak`
+      };
+
+      const topTrack = filtered[0] || top100[0];
+      const kpiTrackEl = document.getElementById(`kpi-top-track`);
+      const kpiArtistEl = document.getElementById(`kpi-top-artist`);
+      const kpiCountEl = document.getElementById(`kpi-visible-count`);
+      const kpiModeEl = document.getElementById(`kpi-mode-label`);
+      const chartKickerEl = document.getElementById(`chart-kicker`);
+      const metricHeadEl = document.getElementById(`metric-col-head`);
+
+      if (kpiTrackEl && topTrack) kpiTrackEl.textContent = topTrack.title;
+      if (kpiArtistEl && topTrack) kpiArtistEl.textContent = `${topTrack.artist} • ${topTrack.date}`;
+      if (kpiCountEl) kpiCountEl.textContent = String(filtered.length);
+      if (kpiModeEl) kpiModeEl.textContent = `${tabNames[activeTab]} (Top 100)`;
+      if (chartKickerEl) chartKickerEl.textContent = tabNames[activeTab];
+      if (metricHeadEl) metricHeadEl.textContent = metricHeads[activeTab];
+
+      renderSourceChart(filtered.length > 0 ? filtered : top100);
+      renderDashboardTableOnly();
+    }
+
+    // Web Audio 140 BPM Dubstep Synth Preview Engine
+    function playTrackPreview(trackId) {
+      if (playingTrackId === trackId) {
+        stopAudioPreview();
+        return;
       }
-    }
 
-    function copyCurrentUri() {
-      const track = RELEASES.find((r) => r.id === state.activeTrackId);
-      if (track) copyTextValue(track.uri);
-    }
+      const track = RAW_TRACKS.find((t) => t.id === trackId);
+      if (!track) return;
 
-    function setChartTab(tab) {
-      state.chartTab = tab;
-      renderBeatTracker();
-      persistState();
-    }
+      stopAudioPreview();
+      playingTrackId = trackId;
+      selectedTrackId = trackId;
 
-    function setRedditTab(tab) {
-      state.redditTab = tab;
-      renderRedditList();
-      persistState();
-    }
+      const titleEl = document.getElementById(`deck-title`);
+      const metaEl = document.getElementById(`deck-meta`);
+      const statusEl = document.getElementById(`deck-status`);
+      const toggleBtn = document.getElementById(`deck-toggle-btn`);
+      if (titleEl) titleEl.textContent = `${track.artist} — ${track.title}`;
+      if (metaEl) metaEl.textContent = `140 BPM ${track.genre} Synth Patch • Released ${track.date}`;
+      if (statusEl) statusEl.textContent = `PLAYING`;
+      if (toggleBtn) toggleBtn.textContent = `Stop Preview`;
 
-    function setNewsOutlet(outlet) {
-      state.newsOutlet = outlet;
-      renderNewsList();
-      persistState();
-    }
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          if (!audioCtx) audioCtx = new AudioCtx();
+          if (audioCtx.state === `suspended`) audioCtx.resume();
 
-    function exportCrateCsv() {
-      const items = state.crate.length > 0
-        ? RELEASES.filter((r) => state.crate.includes(r.id))
-        : getFilteredReleases();
-      const header = `Artist,Title,Label,Subgenre,Format,Date,BPM,Source,URI\n`;
-      const rows = items.map((r) =>
-        [`"${r.artist}"`, `"${r.title}"`, `"${r.label}"`, r.subgenre, r.format, r.date, r.bpm, `"${r.source}"`, `"${r.uri}"`].join(`,`)
-      ).join(`\n`);
-      const csv = header + rows;
+          let step = 0;
+          const triggerStep = () => {
+            if (!audioCtx || playingTrackId !== trackId) return;
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
 
-      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
-        window.notebookAppApi.triggerFileDownload({
-          content: csv,
-          contentType: `text/csv`,
-          encoding: `UTF-8`,
-          filename: `dubstep-nmf-crate-2026-11.csv`
-        });
-        showToast(`Exported ${items.length} releases to CSV`);
-      } else {
-        showToast(`Prepared ${items.length} CSV rows`);
+            const baseFreq = track.genre === `140 / Deep` ? 48.99 : (track.genre === `Riddim` ? 55.0 : 65.41);
+            const notePattern = [1, 1, 1.189, 1, 1.334, 1, 1.122, 0.89];
+            osc.type = track.genre === `140 / Deep` ? `triangle` : `sawtooth`;
+            osc.frequency.setValueAtTime(baseFreq * notePattern[step % notePattern.length], now);
+
+            filter.type = `lowpass`;
+            filter.Q.setValueAtTime(track.genre === `Riddim` ? 8 : 4, now);
+            filter.frequency.setValueAtTime(track.genre === `140 / Deep` ? 180 : 420, now);
+            filter.frequency.exponentialRampToValueAtTime(1100, now + 0.12);
+            filter.frequency.exponentialRampToValueAtTime(160, now + 0.36);
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.16, now + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.4);
+            step += 1;
+          };
+
+          triggerStep();
+          seqInterval = setInterval(triggerStep, 428); // 140 BPM quarter-note pulse
+        }
+      } catch (_e) {
+        // Silent fallback if browser blocks Web Audio
       }
+
+      startEqVisualizer();
+      inspectTrackLinks(trackId);
     }
 
-    // =========================================================================
-    // INIT
-    // =========================================================================
-    async function initDashboard() {
-      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
-        try {
-          const saved = await window.notebookAppApi.getAppState();
-          if (saved && typeof saved === `object`) {
-            state = Object.assign({}, state, saved);
-          }
-        } catch (err) {
-          // Use default state
+    function toggleDeckPlayback() {
+      if (playingTrackId !== null) {
+        stopAudioPreview();
+      } else {
+        const list = getFilteredList();
+        if (list.length > 0) {
+          playTrackPreview(selectedTrackId || list[0].id);
         }
       }
-
-      const wSel = document.getElementById(`week-select`);
-      const fSel = document.getElementById(`format-select`);
-      const sSel = document.getElementById(`sort-select`);
-      const nSel = document.getElementById(`news-outlet-select`);
-      const cSlider = document.getElementById(`deck-cutoff`);
-      const cLbl = document.getElementById(`cutoff-val`);
-
-      if (wSel) wSel.value = state.week;
-      if (fSel) fSel.value = state.format;
-      if (sSel) sSel.value = state.sortBy;
-      if (nSel) nSel.value = state.newsOutlet;
-      if (cSlider) cSlider.value = String(state.cutoffHz);
-      if (cLbl) cLbl.textContent = String(state.cutoffHz);
-
-      renderKpis();
-      renderSubgenrePills();
-      renderFeaturedCards();
-      renderReleaseTable();
-      renderDeck();
-      renderCrateList();
-      renderBeatTracker();
-      renderRedditList();
-      renderNewsList();
-      renderSubgenreChart();
-      startVisualizerLoop();
-
-      if (typeof lucide !== `undefined` && typeof lucide.createIcons === `function`) {
-        lucide.createIcons();
-      }
-
-      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
-        window.notebookAppApi.notifyAppReady();
-      }
     }
 
-    document.addEventListener(`DOMContentLoaded`, initDashboard);
+    function stopAudioPreview() {
+      playingTrackId = null;
+      if (seqInterval) {
+        clearInterval(seqInterval);
+        seqInterval = null;
+      }
+      if (eqInterval) {
+        clearInterval(eqInterval);
+        eqInterval = null;
+      }
+      const statusEl = document.getElementById(`deck-status`);
+      const toggleBtn = document.getElementById(`deck-toggle-btn`);
+      if (statusEl) statusEl.textContent = `STANDBY`;
+      if (toggleBtn) toggleBtn.textContent = `Play Preview`;
+
+      const bars = document.querySelectorAll(`#eq-bars .eq-bar`);
+      bars.forEach((b) => { b.style.height = `4px`; });
+      updateRowStates();
+    }
+
+    function startEqVisualizer() {
+      const bars = document.querySelectorAll(`#eq-bars .eq-bar`);
+      if (!bars.length) return;
+      eqInterval = setInterval(() => {
+        bars.forEach((bar) => {
+          const h = Math.floor(Math.random() * 28) + 6;
+          bar.style.height = `${h}px`;
+        });
+      }, 140);
+    }
+
+    // Boot
+    updateClock();
+    setInterval(updateClock, 1000);
+    renderDashboard();
+    inspectTrackLinks(getRankedTop100(`hyped`)[0].id);
   </script>
 </body>
 </html>
